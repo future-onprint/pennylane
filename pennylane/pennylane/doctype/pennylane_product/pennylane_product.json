@@ -1,0 +1,132 @@
+{
+ "actions": [],
+ "autoname": "hash",
+ "creation": "2026-04-08 00:00:00",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "label",
+  "reference",
+  "col_break_identity",
+  "pennylane_id",
+  "sync_status",
+  "last_synced_at",
+  "section_details",
+  "unit",
+  "vat_rate",
+  "col_break_details",
+  "currency_amount",
+  "description",
+  "section_refs",
+  "external_reference"
+ ],
+ "fields": [
+  {
+   "fieldname": "label",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Label",
+   "reqd": 1
+  },
+  {
+   "description": "Internal product reference",
+   "fieldname": "reference",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Reference"
+  },
+  {
+   "fieldname": "col_break_identity",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "pennylane_id",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Pennylane ID",
+   "read_only": 1
+  },
+  {
+   "default": "Pending",
+   "fieldname": "sync_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Sync Status",
+   "options": "Pending\nSynced\nFailed",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_synced_at",
+   "fieldtype": "Datetime",
+   "label": "Last Synced At",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_details",
+   "fieldtype": "Section Break",
+   "label": "Details"
+  },
+  {
+   "description": "e.g. hour, piece, day",
+   "fieldname": "unit",
+   "fieldtype": "Data",
+   "label": "Unit"
+  },
+  {
+   "description": "e.g. FR_200, FR_100, exempt",
+   "fieldname": "vat_rate",
+   "fieldtype": "Data",
+   "label": "VAT Rate"
+  },
+  {
+   "fieldname": "col_break_details",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "currency_amount",
+   "fieldtype": "Currency",
+   "label": "Unit Price"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_refs",
+   "fieldtype": "Section Break",
+   "label": "References"
+  },
+  {
+   "fieldname": "external_reference",
+   "fieldtype": "Data",
+   "label": "External Reference"
+  }
+ ],
+ "links": [],
+ "modified": "2026-04-08 17:17:42.804189",
+ "modified_by": "kylian.mallet@sklav.group",
+ "module": "Pennylane",
+ "name": "Pennylane Product",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "search_fields": "label,reference,external_reference",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "label",
+ "track_changes": 1
+}
