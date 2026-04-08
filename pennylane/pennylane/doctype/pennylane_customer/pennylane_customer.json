@@ -267,8 +267,17 @@
    "fieldtype": "Column Break"
   }
  ],
- "links": [],
- "modified": "2026-04-08 16:50:13.955312",
+ "links": [
+  {
+   "link_doctype": "Pennylane Customer Quote",
+   "link_fieldname": "customer"
+  },
+  {
+   "link_doctype": "Pennylane Customer Invoice",
+   "link_fieldname": "customer"
+  }
+ ],
+ "modified": "2026-04-08 17:31:23.152199",
  "modified_by": "kylian.mallet@sklav.group",
  "module": "Pennylane",
  "name": "Pennylane Customer",

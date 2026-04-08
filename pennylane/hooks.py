@@ -137,6 +137,22 @@ doc_events = {
 		"after_insert": "pennylane.sync.customer.on_customer_save",
 		"on_update": "pennylane.sync.customer.on_customer_save",
 	},
+	"Pennylane Product": {
+		"after_insert": "pennylane.sync.product.on_product_save",
+		"on_update": "pennylane.sync.product.on_product_save",
+	},
+	"Pennylane Customer Invoice": {
+		"after_insert": "pennylane.sync.invoice.on_invoice_save",
+		"on_update": "pennylane.sync.invoice.on_invoice_save",
+		"on_submit": "pennylane.sync.invoice.on_invoice_submit",
+		"on_cancel": "pennylane.sync.invoice.on_invoice_cancel",
+	},
+	"Pennylane Customer Quote": {
+		"after_insert": "pennylane.sync.quote.on_quote_save",
+		"on_update": "pennylane.sync.quote.on_quote_save",
+		"on_submit": "pennylane.sync.quote.on_quote_submit",
+		"on_cancel": "pennylane.sync.quote.on_quote_cancel",
+	},
 }
 
 # Scheduled Tasks
