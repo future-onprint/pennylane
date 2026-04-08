@@ -102,13 +102,13 @@
    "default": "1",
    "fieldname": "sync_invoices",
    "fieldtype": "Check",
-   "label": "Sync Sales Invoices"
+   "label": "Sync Customer Invoices"
   },
   {
    "default": "1",
    "fieldname": "sync_quotes",
    "fieldtype": "Check",
-   "label": "Sync Quotations"
+   "label": "Sync Customer Quotes"
   },
   {
    "default": "1",
