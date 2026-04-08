@@ -13,6 +13,7 @@ from pennylane.client.customers import (
 	create_customer,
 	get_changelog,
 	get_customer,
+	get_customer_contacts,
 	update_customer,
 )
 from pennylane.mappers.customer import from_pennylane, to_pennylane
@@ -124,7 +125,7 @@ def pull_customers():
 
 		try:
 			pl_data = get_customer(client, pl_id)
-			_upsert(pl_data)
+			_upsert(pl_data, client)
 		except Exception as exc:
 			write_log(
 				direction="pull",
@@ -141,7 +142,7 @@ def pull_customers():
 	frappe.db.set_value("Pennylane Settings", "Pennylane Settings", "customer_changelog_cursor", next_cursor)
 
 
-def _upsert(pl_data: dict):
+def _upsert(pl_data: dict, client: PennylaneClient = None):
 	pl_id = pl_data.get("id")
 	fields = from_pennylane(pl_data)
 
@@ -170,6 +171,10 @@ def _upsert(pl_data: dict):
 			frappe_doctype="Pennylane Customer", frappe_docname=doc.name, pennylane_id=pl_id,
 		)
 
+	# Sync contacts if we have a Pennylane ID and a client is available
+	if pl_id and client is not None:
+		_sync_contacts(doc, client, pl_id)
+
 
 def _handle_delete(pl_id: int):
 	existing = frappe.db.get_value("Pennylane Customer", {"pennylane_id": pl_id}, "name")
@@ -181,6 +186,31 @@ def _handle_delete(pl_id: int):
 	)
 
 
+def _sync_contacts(doc, client: PennylaneClient, pl_customer_id: int) -> None:
+	"""Fetch contacts from Pennylane and replace the child table rows."""
+	try:
+		contacts = get_customer_contacts(client, pl_customer_id)
+	except Exception as exc:
+		frappe.log_error(str(exc), f"Pennylane _sync_contacts id={pl_customer_id}")
+		return
+
+	rows = []
+	for c in contacts:
+		rows.append({
+			"pennylane_id": c.get("id"),
+			"first_name": c.get("first_name"),
+			"last_name": c.get("last_name"),
+			"role": c.get("role"),
+			"email": c.get("email"),
+			"telephone_number": c.get("telephone_number"),
+			"mobile_number": c.get("mobile_number"),
+		})
+
+	doc.flags[_SYNC_FLAG] = "pennylane"
+	doc.set("contacts", rows)
+	doc.save(ignore_permissions=True)
+
+
 def full_sync_customers():
 	"""Pull all customers from the list endpoint (force full sync)."""
 	from pennylane.client.customers import list_customers
@@ -190,7 +220,7 @@ def full_sync_customers():
 	client = PennylaneClient.from_settings()
 	for pl_customer in list_customers(client):
 		try:
-			_upsert(pl_customer)
+			_upsert(pl_customer, client)
 		except Exception as exc:
 			frappe.log_error(str(exc), f"Pennylane full_sync_customers id={pl_customer.get('id')}")
 	frappe.db.set_value("Pennylane Settings", "Pennylane Settings", "customer_changelog_cursor", None)

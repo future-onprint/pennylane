@@ -10,11 +10,13 @@ class PennylaneCustomer(Document):
 
 	if TYPE_CHECKING:
 		from frappe.types import DF
+		from pennylane.pennylane.doctype.pennylane_customer_contact.pennylane_customer_contact import PennylaneCustomerContact
 
 		address_line1: DF.Data | None
 		billing_iban: DF.Data | None
 		billing_language: DF.Link | None
 		city: DF.Data | None
+		contacts: DF.Table[PennylaneCustomerContact]
 		country: DF.Link | None
 		customer_name: DF.Data
 		customer_type: DF.Literal["company", "individual"]

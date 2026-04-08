@@ -43,7 +43,9 @@
   "ledger_account_number",
   "section_misc",
   "external_reference",
-  "notes"
+  "notes",
+  "section_contacts",
+  "contacts"
  ],
  "fields": [
   {
@@ -265,6 +267,19 @@
   {
    "fieldname": "column_break_qaaf",
    "fieldtype": "Column Break"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_contacts",
+   "fieldtype": "Section Break",
+   "label": "Contacts"
+  },
+  {
+   "fieldname": "contacts",
+   "fieldtype": "Table",
+   "label": "Contacts",
+   "options": "Pennylane Customer Contact",
+   "read_only": 1
   }
  ],
  "links": [
