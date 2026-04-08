@@ -179,3 +179,18 @@ def _handle_delete(pl_id: int):
 		direction="pull", resource_type="customer", operation="delete", status="Success",
 		pennylane_id=pl_id,
 	)
+
+
+def full_sync_customers():
+	"""Pull all customers from the list endpoint (force full sync)."""
+	from pennylane.client.customers import list_customers
+
+	if not is_integration_enabled():
+		return
+	client = PennylaneClient.from_settings()
+	for pl_customer in list_customers(client):
+		try:
+			_upsert(pl_customer)
+		except Exception as exc:
+			frappe.log_error(str(exc), f"Pennylane full_sync_customers id={pl_customer.get('id')}")
+	frappe.db.set_value("Pennylane Settings", "Pennylane Settings", "customer_changelog_cursor", None)

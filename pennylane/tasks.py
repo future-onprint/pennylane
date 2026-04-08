@@ -1,25 +1,18 @@
-"""
-Scheduled background tasks wired up in hooks.py.
-"""
+"""Scheduled background tasks wired up in hooks.py."""
 
 import frappe
 
 
 def hourly():
-	"""Pull customer changes from Pennylane changelog — runs every hour."""
-	from pennylane.sync.customer import pull_customers
-
-	try:
-		pull_customers()
-	except Exception:
-		frappe.log_error(frappe.get_traceback(), "Pennylane hourly task: pull_customers")
+	"""Pull changes from all Pennylane changelogs."""
+	_run("pennylane.sync.customer.pull_customers", "pull_customers")
+	_run("pennylane.sync.invoice.pull_invoices", "pull_invoices")
+	_run("pennylane.sync.quote.pull_quotes", "pull_quotes")
+	_run("pennylane.sync.product.pull_products", "pull_products")
 
 
 def process_sync_queue():
-	"""
-	Process pending items in Pennylane Sync Queue (retry failed jobs).
-	Runs every minute via the 'all' scheduler bucket.
-	"""
+	"""Retry failed push jobs — runs every minute via 'all' scheduler bucket."""
 	import frappe.utils
 
 	pending = frappe.get_all(
@@ -29,7 +22,7 @@ def process_sync_queue():
 			"retry_count": ["<", 5],
 			"next_retry_at": ["<=", frappe.utils.now_datetime()],
 		},
-		fields=["name", "resource_type", "operation", "frappe_doctype", "frappe_docname", "pennylane_id", "retry_count"],
+		fields=["name", "resource_type", "frappe_doctype", "frappe_docname", "retry_count"],
 		order_by="creation asc",
 		limit=50,
 	)
@@ -56,6 +49,23 @@ def process_sync_queue():
 
 def _dispatch_queue_item(item):
 	from pennylane.sync.customer import push_customer
+	from pennylane.sync.invoice import push_invoice
+	from pennylane.sync.product import push_product
+	from pennylane.sync.quote import push_quote
 
-	if item.resource_type == "customer":
-		push_customer(item.frappe_docname)
+	dispatch = {
+		"customer": push_customer,
+		"customer_invoice": push_invoice,
+		"customer_quote": push_quote,
+		"product": push_product,
+	}
+	fn = dispatch.get(item.resource_type)
+	if fn:
+		fn(item.frappe_docname)
+
+
+def _run(method: str, label: str):
+	try:
+		frappe.get_attr(method)()
+	except Exception:
+		frappe.log_error(frappe.get_traceback(), f"Pennylane hourly: {label}")

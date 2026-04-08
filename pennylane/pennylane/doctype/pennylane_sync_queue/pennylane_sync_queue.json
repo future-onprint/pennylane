@@ -23,7 +23,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Resource Type",
-   "options": "customer",
+   "options": "customer\ncustomer_invoice\ncustomer_quote\nproduct",
    "reqd": 1
   },
   {

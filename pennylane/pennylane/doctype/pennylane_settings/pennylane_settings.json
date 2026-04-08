@@ -18,10 +18,18 @@
   "sync_customers",
   "sync_invoices",
   "sync_quotes",
+  "sync_products",
+  "force_sync_section",
+  "force_sync_description",
+  "force_sync_customers",
+  "force_sync_invoices",
+  "force_sync_quotes",
+  "force_sync_products",
   "cursor_section",
   "customer_changelog_cursor",
   "invoice_changelog_cursor",
-  "quote_changelog_cursor"
+  "quote_changelog_cursor",
+  "product_changelog_cursor"
  ],
  "fields": [
   {
@@ -89,6 +97,12 @@
    "label": "Sync Quotations"
   },
   {
+   "default": "1",
+   "fieldname": "sync_products",
+   "fieldtype": "Check",
+   "label": "Sync Products"
+  },
+  {
    "collapsible": 1,
    "collapsible_depends_on": "eval:false",
    "fieldname": "cursor_section",
@@ -114,6 +128,48 @@
    "read_only": 1
   },
   {
+   "fieldname": "product_changelog_cursor",
+   "fieldtype": "Data",
+   "label": "Product Changelog Cursor",
+   "read_only": 1
+  },
+  {
+   "description": "Reset cursors and re-import everything from Pennylane. Runs in background.",
+   "fieldname": "force_sync_section",
+   "fieldtype": "Section Break",
+   "label": "Force Full Sync"
+  },
+  {
+   "fieldname": "force_sync_description",
+   "fieldtype": "HTML",
+   "label": "Force Sync Description",
+   "options": "<p class=\"text-muted\">Select resources to re-import then click <strong>Run Full Sync</strong>.</p>"
+  },
+  {
+   "default": "0",
+   "fieldname": "force_sync_customers",
+   "fieldtype": "Check",
+   "label": "Customers"
+  },
+  {
+   "default": "0",
+   "fieldname": "force_sync_invoices",
+   "fieldtype": "Check",
+   "label": "Invoices"
+  },
+  {
+   "default": "0",
+   "fieldname": "force_sync_quotes",
+   "fieldtype": "Check",
+   "label": "Quotes"
+  },
+  {
+   "default": "0",
+   "fieldname": "force_sync_products",
+   "fieldtype": "Check",
+   "label": "Products"
+  },
+  {
    "fieldname": "connection_tab",
    "fieldtype": "Tab Break",
    "label": "Connection"
@@ -126,7 +182,7 @@
  ],
  "issingle": 1,
  "links": [],
- "modified": "2026-04-08 16:23:08.647910",
+ "modified": "2026-04-08 17:27:33.723211",
  "modified_by": "kylian.mallet@sklav.group",
  "module": "Pennylane",
  "name": "Pennylane Settings",
