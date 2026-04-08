@@ -1,6 +1,6 @@
 <div align="center">
 
-# Pennylane
+# 🪙 Pennylane
 
 **Pennylane integration for the Frappe ecosystem.**
 
