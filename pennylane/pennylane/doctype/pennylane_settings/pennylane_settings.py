@@ -23,12 +23,14 @@ class PennylaneSettings(Document):
 		invoice_changelog_cursor: DF.Data | None
 		is_enabled: DF.Check
 		last_connection_test: DF.Datetime | None
+		notify_on_failure: DF.Check
 		product_changelog_cursor: DF.Data | None
 		quote_changelog_cursor: DF.Data | None
 		sync_customers: DF.Check
 		sync_invoices: DF.Check
 		sync_products: DF.Check
 		sync_quotes: DF.Check
+		webhook_secret: DF.Password | None
 	# end: auto-generated types
 
 	def validate(self):
