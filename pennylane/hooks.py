@@ -86,7 +86,7 @@ app_license = "agpl-3.0"
 # ------------
 
 # before_install = "pennylane.install.before_install"
-# after_install = "pennylane.install.after_install"
+after_install = "pennylane.install.after_install"
 
 # Uninstallation
 # ------------
@@ -132,34 +132,24 @@ app_license = "agpl-3.0"
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
+doc_events = {
+	"Pennylane Customer": {
+		"after_insert": "pennylane.sync.customer.on_customer_save",
+		"on_update": "pennylane.sync.customer.on_customer_save",
+	},
+}
 
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-# 	"all": [
-# 		"pennylane.tasks.all"
-# 	],
-# 	"daily": [
-# 		"pennylane.tasks.daily"
-# 	],
-# 	"hourly": [
-# 		"pennylane.tasks.hourly"
-# 	],
-# 	"weekly": [
-# 		"pennylane.tasks.weekly"
-# 	],
-# 	"monthly": [
-# 		"pennylane.tasks.monthly"
-# 	],
-# }
+scheduler_events = {
+	"all": [
+		"pennylane.tasks.process_sync_queue",
+	],
+	"hourly": [
+		"pennylane.tasks.hourly",
+	],
+}
 
 # Testing
 # -------
@@ -239,7 +229,7 @@ app_license = "agpl-3.0"
 # ]
 
 # Automatically update python controller files with type annotations for this app.
-# export_python_type_annotations = True
+export_python_type_annotations = True
 
 # default_log_clearing_doctypes = {
 # 	"Logging DocType Name": 30  # days to retain logs
