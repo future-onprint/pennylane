@@ -10,6 +10,7 @@ import frappe
 import frappe.utils
 
 from pennylane.client.base import PennylaneClient
+from pennylane.utils.pdf import attach_pdf
 from pennylane.client.quotes import (
 	create_quote,
 	get_changelog,
@@ -212,6 +213,7 @@ def _upsert(pl_data: dict, client: PennylaneClient):
 			}
 			frappe.db.set_value("Pennylane Customer Quote", doc_name, update)
 
+		_try_attach_pdf(doc, pl_data)
 		write_log(
 			direction="pull", resource_type="customer_quote", operation="update",
 			status="Success", frappe_doctype="Pennylane Customer Quote",
@@ -228,6 +230,7 @@ def _upsert(pl_data: dict, client: PennylaneClient):
 		if is_locked:
 			doc.submit()
 
+		_try_attach_pdf(doc, pl_data)
 		write_log(
 			direction="pull", resource_type="customer_quote", operation="create",
 			status="Success", frappe_doctype="Pennylane Customer Quote",
@@ -261,4 +264,34 @@ def _ensure_customer_from_pl(pl_customer_id: int, client: PennylaneClient):
 	if not frappe.db.exists("Pennylane Customer", {"pennylane_id": pl_customer_id}):
 		from pennylane.client.customers import get_customer
 		from pennylane.sync.customer import _upsert as upsert_customer
-		upsert_customer(get_customer(client, pl_customer_id))
+		upsert_customer(get_customer(client, pl_customer_id), client)
+
+
+def _try_attach_pdf(doc, pl_data: dict) -> None:
+	"""Attempt to attach the PDF from Pennylane; swallow errors to not break sync."""
+	public_file_url = pl_data.get("public_file_url")
+	filename = pl_data.get("filename")
+	if not public_file_url or not filename:
+		return
+	try:
+		attach_pdf(doc, public_file_url, filename)
+	except Exception as exc:
+		frappe.log_error(str(exc), f"Pennylane attach_pdf quote: {doc.name}")
+
+
+def _sync_single_from_webhook(pl_id: int) -> None:
+	"""Sync a single quote triggered by a webhook event."""
+	if not is_integration_enabled():
+		return
+	client = PennylaneClient.from_settings()
+	try:
+		pl_data = get_quote(client, pl_id)
+		_upsert(pl_data, client)
+	except Exception as exc:
+		write_log(
+			direction="pull", resource_type="customer_quote",
+			operation="webhook", status="Failed",
+			pennylane_id=pl_id, error_message=str(exc),
+		)
+		frappe.log_error(str(exc), f"Pennylane webhook quote id={pl_id}")
+		raise
