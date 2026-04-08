@@ -11,6 +11,7 @@ class PennylaneCustomerQuote(Document):
 		from frappe.types import DF
 		from pennylane.pennylane.doctype.pennylane_invoice_line.pennylane_invoice_line import PennylaneInvoiceLine
 
+		amended_from: DF.Link | None
 		amount: DF.Currency
 		currency: DF.Link | None
 		currency_amount: DF.Currency

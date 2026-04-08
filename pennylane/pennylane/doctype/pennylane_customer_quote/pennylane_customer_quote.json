@@ -30,7 +30,8 @@
   "pdf_description",
   "special_mention",
   "section_misc",
-  "external_reference"
+  "external_reference",
+  "amended_from"
  ],
  "fields": [
   {
@@ -192,14 +193,30 @@
    "fieldname": "external_reference",
    "fieldtype": "Data",
    "label": "External Reference"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Pennylane Customer Quote",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
   }
  ],
  "is_submittable": 1,
- "links": [],
- "modified": "2026-04-08 00:00:00.000000",
- "modified_by": "Administrator",
+ "links": [
+  {
+   "link_doctype": "Pennylane Customer Invoice",
+   "link_fieldname": "source_quote"
+  }
+ ],
+ "modified": "2026-04-08 17:59:04.844965",
+ "modified_by": "kylian.mallet@sklav.group",
  "module": "Pennylane",
  "name": "Pennylane Customer Quote",
+ "naming_rule": "Random",
  "owner": "Administrator",
  "permissions": [
   {
