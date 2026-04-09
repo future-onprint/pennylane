@@ -42,7 +42,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Operation",
-   "options": "create\nupdate\ndelete"
+   "options": "create\nupdate\ndelete\nfull_sync\nwebhook\ncancel\nsync"
   },
   {
    "fieldname": "status",
