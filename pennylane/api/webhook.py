@@ -57,17 +57,19 @@ def handle_webhook():
 
 
 def _dispatch(event_type: str, resource_id):
-	"""Enqueue the correct sync job based on event_type."""
-	from pennylane.sync.utils import enqueue_sync
-
+	"""Enqueue the correct pull job based on event_type."""
 	if event_type == "customer_invoice.created":
-		enqueue_sync(
+		frappe.enqueue(
 			"pennylane.sync.invoice._sync_single_from_webhook",
+			queue="default",
+			enqueue_after_commit=True,
 			pl_id=resource_id,
 		)
 	elif event_type == "quote.created":
-		enqueue_sync(
+		frappe.enqueue(
 			"pennylane.sync.quote._sync_single_from_webhook",
+			queue="default",
+			enqueue_after_commit=True,
 			pl_id=resource_id,
 		)
 	else:
