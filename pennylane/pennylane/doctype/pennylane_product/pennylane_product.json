@@ -16,6 +16,8 @@
   "vat_rate",
   "col_break_details",
   "currency_amount",
+  "currency",
+  "price",
   "description",
   "section_refs",
   "external_reference"
@@ -88,6 +90,18 @@
    "label": "Unit Price"
   },
   {
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "options": "Currency"
+  },
+  {
+   "fieldname": "price",
+   "fieldtype": "Currency",
+   "label": "Price (incl. VAT)",
+   "read_only": 1
+  },
+  {
    "fieldname": "description",
    "fieldtype": "Small Text",
    "label": "Description"
@@ -105,7 +119,7 @@
   }
  ],
  "links": [],
- "modified": "2026-04-08 17:17:42.804189",
+ "modified": "2026-04-09 10:00:00.000000",
  "modified_by": "kylian.mallet@sklav.group",
  "module": "Pennylane",
  "name": "Pennylane Product",
