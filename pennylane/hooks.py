@@ -4,6 +4,15 @@ app_publisher = "Underscore Blank OÜ"
 app_description = "Pennylane integration for Frappe ecosystem."
 app_email = "contact@underscore-blank.io"
 app_license = "agpl-3.0"
+app_color = "#006666"
+app_icon = "icon-pennylane"
+
+# Fixtures
+# --------
+# Roles shipped with the app — imported automatically on bench migrate.
+fixtures = [
+	{"dt": "Role", "filters": [["name", "=", "Pennylane Manager"]]},
+]
 
 # Apps
 # ------------------
@@ -11,15 +20,14 @@ app_license = "agpl-3.0"
 # required_apps = []
 
 # Each item in the list will be shown as an app in the apps page
-# add_to_apps_screen = [
-# 	{
-# 		"name": "pennylane",
-# 		"logo": "/assets/pennylane/logo.png",
-# 		"title": "Pennylane",
-# 		"route": "/pennylane",
-# 		"has_permission": "pennylane.api.permission.has_app_permission"
-# 	}
-# ]
+add_to_apps_screen = [
+	{
+		"name": "pennylane",
+		"logo": "/assets/pennylane/icon.svg",
+		"title": "Pennylane",
+		"route": "/desk/pennylane",
+	}
+]
 
 # Includes in <head>
 # ------------------
@@ -51,7 +59,7 @@ app_license = "agpl-3.0"
 # Svg Icons
 # ------------------
 # include app icons in desk
-# app_include_icons = "pennylane/public/icons.svg"
+# app_include_icons = "/assets/pennylane/icons/pennylane/icons.svg"
 
 # Home Pages
 # ----------

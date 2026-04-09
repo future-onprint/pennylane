@@ -18,6 +18,9 @@
  "roles": [
   {
    "role": "System Manager"
+  },
+  {
+   "role": "Pennylane Manager"
   }
  ]
 }

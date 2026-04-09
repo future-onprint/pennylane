@@ -4,6 +4,7 @@
 import frappe
 from frappe.tests import IntegrationTestCase
 
+from pennylane.install import _seed_vat_rates
 from pennylane.mappers.product import from_pennylane, to_pennylane
 
 EXTRA_TEST_RECORD_DEPENDENCIES = []
@@ -20,6 +21,11 @@ def make_product(**kwargs) -> "frappe.Document":
 
 
 class IntegrationTestPennylaneProduct(IntegrationTestCase):
+	@classmethod
+	def setUpClass(cls):
+		super().setUpClass()
+		_seed_vat_rates()
+
 	def tearDown(self):
 		frappe.db.delete("Pennylane Product", {"label": ["like", "_Test%"]})
 		frappe.db.commit()

@@ -100,6 +100,10 @@
    "read": 1,
    "role": "System Manager",
    "write": 1
+  },
+  {
+   "read": 1,
+   "role": "Pennylane Manager"
   }
  ],
  "row_format": "Dynamic",

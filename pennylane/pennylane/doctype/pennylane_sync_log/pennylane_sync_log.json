@@ -118,6 +118,10 @@
   {
    "read": 1,
    "role": "System Manager"
+  },
+  {
+   "read": 1,
+   "role": "Pennylane Manager"
   }
  ],
  "row_format": "Dynamic",

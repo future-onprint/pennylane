@@ -73,10 +73,10 @@
    "label": "Unit"
   },
   {
-   "description": "e.g. FR_200, FR_100, exempt",
    "fieldname": "vat_rate",
-   "fieldtype": "Data",
-   "label": "VAT Rate"
+   "fieldtype": "Link",
+   "label": "VAT Rate",
+   "options": "Pennylane VAT Rate"
   },
   {
    "fieldname": "col_break_details",
@@ -118,6 +118,16 @@
    "print": 1,
    "read": 1,
    "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "Pennylane Manager",
    "share": 1,
    "write": 1
   }
