@@ -116,26 +116,24 @@ def pull_customers():
 	items = resp.get("items", [])
 
 	for change in items:
-		pl_id = change["resource_id"]
-		op = change["operation"]
-
-		if op == "delete":
-			_handle_delete(pl_id)
-			continue
-
 		try:
+			pl_id = change["id"]
+			op = change["operation"]
+			if op == "delete":
+				_handle_delete(pl_id)
+				continue
 			pl_data = get_customer(client, pl_id)
 			_upsert(pl_data, client)
 		except Exception as exc:
 			write_log(
 				direction="pull",
 				resource_type="customer",
-				operation=op,
+				operation=change.get("operation", "unknown"),
 				status="Failed",
-				pennylane_id=pl_id,
+				pennylane_id=change.get("id"),
 				error_message=str(exc),
 			)
-			frappe.log_error(str(exc), f"Pennylane pull_customers id={pl_id}")
+			frappe.log_error(str(exc), f"Pennylane pull_customers id={change.get('id')}")
 
 	# Advance cursor for next run
 	next_cursor = resp.get("next_cursor") if resp.get("has_more") else (items[-1].get("id") if items else cursor)

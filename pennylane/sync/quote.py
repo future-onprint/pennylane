@@ -139,19 +139,20 @@ def pull_quotes():
 	items = resp.get("items", [])
 
 	for change in items:
-		pl_id = change["resource_id"]
-		if change["operation"] == "delete":
-			_handle_delete(pl_id)
-			continue
 		try:
+			pl_id = change["id"]
+			op = change["operation"]
+			if op == "delete":
+				_handle_delete(pl_id)
+				continue
 			_upsert(get_quote(client, pl_id), client)
 		except Exception as exc:
 			write_log(
 				direction="pull", resource_type="customer_quote",
-				operation=change["operation"], status="Failed",
-				pennylane_id=pl_id, error_message=str(exc),
+				operation=change.get("operation", "unknown"), status="Failed",
+				pennylane_id=change.get("id"), error_message=str(exc),
 			)
-			frappe.log_error(str(exc), f"Pennylane pull_quotes id={pl_id}")
+			frappe.log_error(str(exc), f"Pennylane pull_quotes id={change.get('id')}")
 
 	next_cursor = (
 		resp.get("next_cursor")

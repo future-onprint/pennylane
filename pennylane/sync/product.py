@@ -94,16 +94,21 @@ def pull_products():
 	items = resp.get("items", [])
 
 	for change in items:
-		pl_id = change["resource_id"]
-		if change["operation"] == "delete":
-			_handle_delete(pl_id)
-			continue
 		try:
+			pl_id = change["id"]
+			op = change["operation"]
+			if op == "delete":
+				_handle_delete(pl_id)
+				continue
 			_upsert(get_product(client, pl_id))
 		except Exception as exc:
-			write_log(direction="pull", resource_type="product", operation=change["operation"],
-				status="Failed", pennylane_id=pl_id, error_message=str(exc))
-			frappe.log_error(str(exc), f"Pennylane pull_products id={pl_id}")
+			write_log(
+				direction="pull", resource_type="product",
+				operation=change.get("operation", "unknown"),
+				status="Failed", pennylane_id=change.get("id"),
+				error_message=str(exc),
+			)
+			frappe.log_error(str(exc), f"Pennylane pull_products id={change.get('id')}")
 
 	next_cursor = resp.get("next_cursor") if resp.get("has_more") else (items[-1].get("id") if items else cursor)
 	frappe.db.set_value("Pennylane Settings", "Pennylane Settings", "product_changelog_cursor", next_cursor)
