@@ -16,8 +16,17 @@ frappe.listview_settings["Pennylane Product"] = {
 		listview.page.add_inner_button(__("Sync All"), () => {
 			pennylane_sync_all(listview, "Pennylane Product");
 		});
-		listview.page.add_inner_button(__("Clean up Deleted"), () => {
-			pennylane_cleanup_deleted(listview, "Pennylane Product");
+
+		frappe.call({
+			method: "frappe.client.get_count",
+			args: { doctype: "Pennylane Product", filters: { sync_status: "Deleted" } },
+			callback(r) {
+				if (r.message > 0) {
+					const btn = listview.page.add_inner_button(__("Clean up Deleted"), () => {
+						pennylane_cleanup_deleted(listview, "Pennylane Product", btn);
+					});
+				}
+			},
 		});
 	},
 };
@@ -30,16 +39,13 @@ function pennylane_sync_all(listview, doctype) {
 		freeze_message: __("Syncing…"),
 		callback(r) {
 			if (!r.exc) {
-				frappe.show_alert({
-					message: __("Sync started in background"),
-					indicator: "blue",
-				});
+				frappe.show_alert({ message: __("Sync started in background"), indicator: "blue" });
 			}
 		},
 	});
 }
 
-function pennylane_cleanup_deleted(listview, doctype) {
+function pennylane_cleanup_deleted(listview, doctype, btn) {
 	frappe.confirm(
 		__("This will permanently delete all records marked as Deleted. Continue?"),
 		() => {
@@ -54,6 +60,7 @@ function pennylane_cleanup_deleted(listview, doctype) {
 							message: __("{0} record(s) deleted", [r.message.deleted]),
 							indicator: "green",
 						});
+						btn && btn.remove();
 						listview.refresh();
 					}
 				},
