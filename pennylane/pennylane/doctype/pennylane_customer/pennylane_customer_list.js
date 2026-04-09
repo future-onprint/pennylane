@@ -1,4 +1,14 @@
+const SYNC_STATUS_COLOR = {
+	Synced: "green",
+	Pending: "orange",
+	Failed: "red",
+	Deleted: "purple",
+};
+
 frappe.listview_settings["Pennylane Customer"] = {
+	get_indicator(doc) {
+		return [__(doc.sync_status), SYNC_STATUS_COLOR[doc.sync_status] || "grey", `sync_status,=,${doc.sync_status}`];
+	},
 	onload(listview) {
 		listview.page.add_inner_button(__("Clean up Deleted"), () => {
 			pennylane_cleanup_deleted(listview, "Pennylane Customer");
