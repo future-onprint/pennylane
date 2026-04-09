@@ -15,6 +15,11 @@ import frappe
 @frappe.whitelist(allow_guest=True)
 def handle_webhook():
 	"""Receive and dispatch Pennylane webhook events."""
+	enable_webhooks = frappe.db.get_single_value("Pennylane Settings", "enable_webhooks")
+	if not enable_webhooks:
+		frappe.response.http_status_code = 404
+		return {"status": "error", "message": "Webhooks are disabled"}
+
 	# Read raw body and signature
 	raw_body: bytes = frappe.request.data
 	signature = frappe.get_request_header("X-Pennylane-Signature") or ""
