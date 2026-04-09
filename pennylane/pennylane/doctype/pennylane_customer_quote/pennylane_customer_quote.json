@@ -31,6 +31,7 @@
   "special_mention",
   "section_misc",
   "external_reference",
+  "column_break_oldi",
   "amended_from"
  ],
  "fields": [
@@ -67,7 +68,7 @@
   },
   {
    "fieldname": "pennylane_id",
-   "fieldtype": "Int",
+   "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Pennylane ID",
    "read_only": 1
@@ -206,6 +207,10 @@
    "print_hide": 1,
    "read_only": 1,
    "search_index": 1
+  },
+  {
+   "fieldname": "column_break_oldi",
+   "fieldtype": "Column Break"
   }
  ],
  "is_submittable": 1,
@@ -215,7 +220,7 @@
    "link_fieldname": "source_quote"
   }
  ],
- "modified": "2026-04-08 17:59:04.844965",
+ "modified": "2026-04-09 21:50:06.178542",
  "modified_by": "kylian.mallet@sklav.group",
  "module": "Pennylane",
  "name": "Pennylane Customer Quote",
@@ -249,9 +254,17 @@
  ],
  "row_format": "Dynamic",
  "search_fields": "customer,quote_number,pennylane_id",
+ "show_title_field_in_link": 1,
  "sort_field": "date",
  "sort_order": "DESC",
- "states": [],
+ "state_fieldname": "status",
+ "states": [
+  {"color": "Orange", "title": "pending"},
+  {"color": "Blue",   "title": "accepted"},
+  {"color": "Red",    "title": "denied"},
+  {"color": "Green",  "title": "invoiced"},
+  {"color": "Grey",   "title": "expired"}
+ ],
  "title_field": "quote_number",
  "track_changes": 1
 }

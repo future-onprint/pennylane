@@ -31,8 +31,9 @@
   "special_mention",
   "section_misc",
   "source_quote",
-  "external_reference",
-  "amended_from"
+  "amended_from",
+  "column_break_goxz",
+  "external_reference"
  ],
  "fields": [
   {
@@ -68,7 +69,7 @@
   },
   {
    "fieldname": "pennylane_id",
-   "fieldtype": "Int",
+   "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Pennylane ID",
    "read_only": 1
@@ -215,11 +216,15 @@
    "print_hide": 1,
    "read_only": 1,
    "search_index": 1
+  },
+  {
+   "fieldname": "column_break_goxz",
+   "fieldtype": "Column Break"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2026-04-09 15:58:10.586775",
+ "modified": "2026-04-09 21:49:45.618534",
  "modified_by": "kylian.mallet@sklav.group",
  "module": "Pennylane",
  "name": "Pennylane Customer Invoice",
@@ -252,9 +257,23 @@
  ],
  "row_format": "Dynamic",
  "search_fields": "customer,invoice_number,pennylane_id",
+ "show_title_field_in_link": 1,
  "sort_field": "date",
  "sort_order": "DESC",
- "states": [],
+ "state_fieldname": "status",
+ "states": [
+  {"color": "Grey",   "title": "draft"},
+  {"color": "Orange", "title": "incomplete"},
+  {"color": "Blue",   "title": "upcoming"},
+  {"color": "Red",    "title": "late"},
+  {"color": "Green",  "title": "paid"},
+  {"color": "Cyan",   "title": "partially_paid"},
+  {"color": "Orange", "title": "partially_cancelled"},
+  {"color": "Red",    "title": "cancelled"},
+  {"color": "Purple", "title": "credit_note"},
+  {"color": "Grey",   "title": "archived"},
+  {"color": "Blue",   "title": "proforma"}
+ ],
  "title_field": "invoice_number",
  "track_changes": 1
 }

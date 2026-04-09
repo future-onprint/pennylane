@@ -27,11 +27,11 @@ class PennylaneCustomerInvoice(Document):
 		pdf_description: DF.SmallText | None
 		pdf_invoice_free_text: DF.SmallText | None
 		pdf_invoice_subject: DF.Data | None
-		pennylane_id: DF.Int
+		pennylane_id: DF.Data | None
 		source_quote: DF.Link | None
 		special_mention: DF.SmallText | None
 		status: DF.Literal["draft", "incomplete", "upcoming", "late", "paid", "partially_paid", "partially_cancelled", "cancelled", "credit_note", "archived", "proforma"]
-		sync_status: DF.Literal["Pending", "Synced", "Failed"]
+		sync_status: DF.Literal["Pending", "Synced", "Failed", "Deleted"]
 	# end: auto-generated types
 
 	pass
