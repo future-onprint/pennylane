@@ -4,6 +4,12 @@ from .base import PennylaneClient
 
 
 def get_customer(client: PennylaneClient, pennylane_id: int) -> dict:
+	"""Fetch a customer by ID. Works for both company and individual customers."""
+	return client.get(f"/customers/{pennylane_id}")
+
+
+def get_company_customer(client: PennylaneClient, pennylane_id: int) -> dict:
+	"""Fetch a company customer specifically (used for push operations)."""
 	return client.get(f"/company_customers/{pennylane_id}")
 
 
@@ -16,17 +22,13 @@ def update_customer(client: PennylaneClient, pennylane_id: int, payload: dict) -
 
 
 def list_customers(client: PennylaneClient, **params):
-	"""Generator yielding all company customers."""
-	yield from client.paginate("/company_customers", params=params)
+	"""Generator yielding all customers (company and individual)."""
+	yield from client.paginate("/customers", params=params)
 
 
 def get_customer_contacts(client: PennylaneClient, pl_customer_id: int) -> list:
 	"""Fetch all contacts for a Pennylane customer. Returns a list of contact dicts."""
-	result = client.get(f"/customers/{pl_customer_id}/contacts")
-	# The API may return a dict with a key (e.g. "contacts") or a list directly.
-	if isinstance(result, list):
-		return result
-	return result.get("contacts", [])
+	return list(client.paginate(f"/customers/{pl_customer_id}/contacts"))
 
 
 def get_changelog(client: PennylaneClient, start_date: str | None = None, cursor: str | None = None) -> dict:
