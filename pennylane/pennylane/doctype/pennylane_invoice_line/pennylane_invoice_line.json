@@ -15,7 +15,8 @@
   "unit_price",
   "discount_type",
   "discount",
-  "currency_amount"
+  "currency_amount",
+  "currency"
  ],
  "fields": [
   {
@@ -70,6 +71,7 @@
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Unit Price",
+   "options": "currency",
    "reqd": 1
   },
   {
@@ -90,7 +92,15 @@
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Amount",
+   "options": "currency",
    "read_only": 1
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Currency",
+   "options": "Currency"
   }
  ],
  "istable": 1,

@@ -123,6 +123,7 @@
    "fieldname": "amount",
    "fieldtype": "Currency",
    "label": "Amount (EUR)",
+   "options": "EUR",
    "read_only": 1
   },
   {
@@ -130,6 +131,7 @@
    "fieldname": "currency_amount",
    "fieldtype": "Currency",
    "label": "Currency Amount",
+   "options": "currency",
    "read_only": 1
   },
   {

@@ -73,7 +73,7 @@ def from_pennylane(pl_invoice: dict) -> dict:
 		"pdf_description": pl_invoice.get("pdf_description"),
 		"special_mention": pl_invoice.get("special_mention"),
 		"source_quote": source_quote,
-		"invoice_lines": lines_from_pennylane(pl_invoice.get("invoice_lines") or []),
+		"invoice_lines": lines_from_pennylane(pl_invoice.get("invoice_lines") or [], pl_invoice.get("currency")),
 		# draft flag used by sync to decide whether to submit
 		"_draft": pl_invoice.get("draft", True),
 	}

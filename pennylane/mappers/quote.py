@@ -66,7 +66,7 @@ def from_pennylane(pl_quote: dict) -> dict:
 		"pdf_invoice_free_text": pl_quote.get("pdf_invoice_free_text"),
 		"pdf_description": pl_quote.get("pdf_description"),
 		"special_mention": pl_quote.get("special_mention"),
-		"invoice_lines": lines_from_pennylane(pl_quote.get("invoice_lines") or []),
+		"invoice_lines": lines_from_pennylane(pl_quote.get("invoice_lines") or [], pl_quote.get("currency")),
 		# Used by sync to decide whether to submit the Frappe doc
 		"_locked": status in _LOCKED_STATUSES,
 	}

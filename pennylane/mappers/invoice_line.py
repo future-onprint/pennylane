@@ -50,7 +50,7 @@ def lines_to_pennylane(doc_lines: list) -> list:
 	return result
 
 
-def lines_from_pennylane(pl_lines: list) -> list:
+def lines_from_pennylane(pl_lines: list, currency: str | None = None) -> list:
 	"""Convert Pennylane API invoice_lines to child table rows."""
 	rows = []
 	for line in pl_lines:
@@ -77,5 +77,6 @@ def lines_from_pennylane(pl_lines: list) -> list:
 			"discount_type": discount_type,
 			"discount": discount_value,
 			"currency_amount": float(line.get("currency_amount") or 0),
+			"currency": currency,
 		})
 	return rows
