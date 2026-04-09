@@ -23,7 +23,8 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Pennylane Code",
-   "reqd": 1
+   "reqd": 1,
+   "unique": 1
   },
   {
    "fieldname": "symbol",
@@ -33,8 +34,8 @@
   }
  ],
  "links": [],
- "modified": "2026-04-09 00:00:00.000000",
- "modified_by": "Administrator",
+ "modified": "2026-04-09 16:16:33.274183",
+ "modified_by": "kylian.mallet@sklav.group",
  "module": "Pennylane",
  "name": "Pennylane Unit",
  "owner": "Administrator",
@@ -58,6 +59,7 @@
  "read_only": 1,
  "row_format": "Dynamic",
  "search_fields": "label,code,symbol",
+ "show_title_field_in_link": 1,
  "sort_field": "label",
  "sort_order": "ASC",
  "states": [],

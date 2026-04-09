@@ -31,7 +31,8 @@
   "special_mention",
   "section_misc",
   "source_quote",
-  "external_reference"
+  "external_reference",
+  "amended_from"
  ],
  "fields": [
   {
@@ -123,6 +124,7 @@
    "fieldname": "amount",
    "fieldtype": "Currency",
    "label": "Amount (EUR)",
+   "options": "EUR",
    "read_only": 1
   },
   {
@@ -130,6 +132,7 @@
    "fieldname": "currency_amount",
    "fieldtype": "Currency",
    "label": "Currency Amount",
+   "options": "currency",
    "read_only": 1
   },
   {
@@ -201,12 +204,22 @@
    "fieldname": "external_reference",
    "fieldtype": "Data",
    "label": "External Reference"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Pennylane Customer Invoice",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2026-04-08 00:00:00.000000",
- "modified_by": "Administrator",
+ "modified": "2026-04-09 15:58:10.586775",
+ "modified_by": "kylian.mallet@sklav.group",
  "module": "Pennylane",
  "name": "Pennylane Customer Invoice",
  "owner": "Administrator",

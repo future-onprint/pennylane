@@ -11,11 +11,11 @@ class PennylaneVATRate(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
-		code: DF.Data
+		code: DF.Data | None
 		description: DF.SmallText | None
 		is_exempt: DF.Check
 		label: DF.Data
-		rate: DF.Percent | None
+		rate: DF.Percent
 	# end: auto-generated types
 
 	def before_save(self):

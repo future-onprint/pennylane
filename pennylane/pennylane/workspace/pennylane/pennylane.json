@@ -10,7 +10,7 @@
    "label": "Quotes Amounts Evolution"
   }
  ],
- "content": "[{\"id\": \"zVPMm20gQF\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Total Customers\", \"col\": 4}}, {\"id\": \"XxJM-Vfibs\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Total Invoices\", \"col\": 4}}, {\"id\": \"-flgjXfLtf\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Total Quotes\", \"col\": 4}}, {\"id\": \"7syo0vNtgq\", \"type\": \"chart\", \"data\": {\"chart_name\": \"Quotes Amounts Evolution\", \"col\": 6}}, {\"id\": \"oswmVrBacF\", \"type\": \"chart\", \"data\": {\"chart_name\": \"Invoices Amount Envolution\", \"col\": 6}}, {\"id\": \"JRPf-ZtcBl\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"y841_5GMXe\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\">Shortcuts</span>\", \"col\": 12}}, {\"id\": \"F3uxIW6hDp\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Invoices\", \"col\": 4}}, {\"id\": \"Rj0bZlrE9B\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Quotes\", \"col\": 4}}, {\"id\": \"CGR5rzrjfU\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Customers\", \"col\": 4}}, {\"id\": \"0No8E2hyH0\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"mUEt19KsJw\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\">Ressources</span>\", \"col\": 12}}, {\"id\": \"UV_UveWhvp\", \"type\": \"card\", \"data\": {\"card_name\": \"Sales\", \"col\": 6}}, {\"id\": \"mym0cmwzJw\", \"type\": \"card\", \"data\": {\"card_name\": \"Advanced\", \"col\": 6}}]",
+ "content": "[{\"id\":\"-flgjXfLtf\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Total Products\",\"col\":3}},{\"id\":\"zVPMm20gQF\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Total Customers\",\"col\":3}},{\"id\":\"XxJM-Vfibs\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Total Invoices\",\"col\":3}},{\"id\":\"GY_hvXZUOY\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Total Quotes\",\"col\":3}},{\"id\":\"7syo0vNtgq\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Quotes Amounts Evolution\",\"col\":6}},{\"id\":\"oswmVrBacF\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Invoices Amount Envolution\",\"col\":6}},{\"id\":\"JRPf-ZtcBl\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"y841_5GMXe\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Shortcuts</span>\",\"col\":12}},{\"id\":\"F3uxIW6hDp\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Invoices\",\"col\":4}},{\"id\":\"Rj0bZlrE9B\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Quotes\",\"col\":4}},{\"id\":\"CGR5rzrjfU\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Customers\",\"col\":4}},{\"id\":\"0No8E2hyH0\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"mUEt19KsJw\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Ressources</span>\",\"col\":12}},{\"id\":\"UV_UveWhvp\",\"type\":\"card\",\"data\":{\"card_name\":\"Sales\",\"col\":6}},{\"id\":\"mym0cmwzJw\",\"type\":\"card\",\"data\":{\"card_name\":\"Advanced\",\"col\":6}}]",
  "creation": "2026-04-09 00:00:00",
  "custom_blocks": [],
  "docstatus": 0,
@@ -113,7 +113,7 @@
    "type": "Link"
   }
  ],
- "modified": "2026-04-09 15:42:34.417820",
+ "modified": "2026-04-09 16:06:27.252877",
  "modified_by": "kylian.mallet@sklav.group",
  "module": "Pennylane",
  "name": "Pennylane",
@@ -125,6 +125,10 @@
   {
    "label": "Total Invoices",
    "number_card_name": "Pennylane Customer Invoice Count"
+  },
+  {
+   "label": "Total Products",
+   "number_card_name": "Pennylane Products Count"
   },
   {
    "label": "Total Quotes",

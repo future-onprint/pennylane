@@ -1,6 +1,6 @@
 {
  "actions": [],
- "allow_import": 0,
+ "autoname": "field:code",
  "creation": "2026-04-09 00:00:00",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -38,7 +38,8 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Pennylane Code",
-   "read_only": 1
+   "read_only": 1,
+   "unique": 1
   },
   {
    "default": "0",
@@ -59,14 +60,12 @@
    "read_only": 1
   }
  ],
- "issingle": 0,
  "links": [],
- "modified": "2026-04-09 00:00:00.000000",
- "modified_by": "Administrator",
+ "modified": "2026-04-09 15:51:12.205614",
+ "modified_by": "kylian.mallet@sklav.group",
  "module": "Pennylane",
  "name": "Pennylane VAT Rate",
  "naming_rule": "By fieldname",
- "autoname": "field:code",
  "owner": "Administrator",
  "permissions": [
   {
@@ -91,9 +90,9 @@
  "read_only": 1,
  "row_format": "Dynamic",
  "search_fields": "label,code",
+ "show_title_field_in_link": 1,
  "sort_field": "rate",
  "sort_order": "ASC",
  "states": [],
- "title_field": "label",
- "track_changes": 0
+ "title_field": "label"
 }
