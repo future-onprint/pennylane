@@ -54,11 +54,11 @@
    "label": "Unit"
   },
   {
-   "description": "e.g. FR_200, FR_100, exempt",
    "fieldname": "vat_rate",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "VAT Rate"
+   "label": "VAT Rate",
+   "options": "Pennylane VAT Rate"
   },
   {
    "fieldname": "col_break_price",
