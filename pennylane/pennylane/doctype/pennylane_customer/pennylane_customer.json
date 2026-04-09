@@ -81,7 +81,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Sync Status",
-   "options": "Pending\nSynced\nFailed",
+   "options": "Pending\nSynced\nFailed\nDeleted",
    "read_only": 1
   },
   {

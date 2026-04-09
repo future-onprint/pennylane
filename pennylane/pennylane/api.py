@@ -11,6 +11,13 @@ _DISPATCH = {
 	"Pennylane Customer Quote": "pennylane.sync.quote.push_quote",
 }
 
+_DELETABLE_DOCTYPES = {
+	"Pennylane Product",
+	"Pennylane Customer",
+	"Pennylane Customer Invoice",
+	"Pennylane Customer Quote",
+}
+
 
 @frappe.whitelist()
 def sync_now(doctype: str, docname: str):
@@ -24,3 +31,19 @@ def sync_now(doctype: str, docname: str):
 
 	frappe.get_attr(method)(docname)
 	frappe.db.commit()
+
+
+@frappe.whitelist()
+def cleanup_deleted(doctype: str):
+	"""Delete all Frappe records marked as Deleted (removed from Pennylane)."""
+	if doctype not in _DELETABLE_DOCTYPES:
+		frappe.throw(frappe._("Unsupported DocType: {0}").format(doctype))
+
+	names = frappe.get_all(doctype, filters={"sync_status": "Deleted"}, pluck="name")
+	count = 0
+	for name in names:
+		frappe.delete_doc(doctype, name, ignore_permissions=True, force=True)
+		count += 1
+
+	frappe.db.commit()
+	return {"deleted": count}

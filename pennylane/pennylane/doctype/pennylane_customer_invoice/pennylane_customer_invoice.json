@@ -94,7 +94,7 @@
    "fieldname": "sync_status",
    "fieldtype": "Select",
    "label": "Sync Status",
-   "options": "Pending\nSynced\nFailed",
+   "options": "Pending\nSynced\nFailed\nDeleted",
    "read_only": 1
   },
   {

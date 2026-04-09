@@ -242,7 +242,7 @@ def _upsert(pl_data: dict, client: PennylaneClient):
 def _handle_delete(pl_id: int):
 	doc_name = frappe.db.get_value("Pennylane Customer Quote", {"pennylane_id": pl_id}, "name")
 	if doc_name:
-		frappe.db.set_value("Pennylane Customer Quote", doc_name, "sync_status", "Failed")
+		frappe.db.set_value("Pennylane Customer Quote", doc_name, "sync_status", "Deleted")
 	write_log(
 		direction="pull", resource_type="customer_quote", operation="delete",
 		status="Success", pennylane_id=pl_id,

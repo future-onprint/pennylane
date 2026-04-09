@@ -54,7 +54,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Sync Status",
-   "options": "Pending\nSynced\nFailed",
+   "options": "Pending\nSynced\nFailed\nDeleted",
    "read_only": 1
   },
   {
@@ -75,6 +75,7 @@
    "options": "Pennylane Unit"
   },
   {
+   "default": "FR_200",
    "fieldname": "vat_rate",
    "fieldtype": "Link",
    "label": "VAT Rate",
@@ -87,7 +88,8 @@
   {
    "fieldname": "currency_amount",
    "fieldtype": "Currency",
-   "label": "Unit Price"
+   "label": "Unit Price",
+   "options": "currency"
   },
   {
    "fieldname": "currency",
@@ -99,6 +101,7 @@
    "fieldname": "price",
    "fieldtype": "Currency",
    "label": "Price (incl. VAT)",
+   "options": "currency",
    "read_only": 1
   },
   {
@@ -119,7 +122,7 @@
   }
  ],
  "links": [],
- "modified": "2026-04-09 10:00:00.000000",
+ "modified": "2026-04-09 16:28:52.973206",
  "modified_by": "kylian.mallet@sklav.group",
  "module": "Pennylane",
  "name": "Pennylane Product",

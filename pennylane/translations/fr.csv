@@ -189,6 +189,11 @@ Webhooks,Webhooks
 "Telephone Number","Numéro de téléphone"
 "Mobile Number","Numéro de mobile"
 Rate,Taux
+Deleted,Supprimé
+"Clean up Deleted","Nettoyer les supprimés"
+"This will permanently delete all records marked as Deleted. Continue?","Cela supprimera définitivement tous les enregistrements marqués comme Supprimé. Continuer ?"
+"{0} record(s) deleted","{0} enregistrement(s) supprimé(s)"
+"Cleaning up…","Nettoyage en cours…"
 "Sync","Synchroniser"
 "Syncing with Pennylane…","Synchronisation avec Pennylane…"
 "Synced successfully","Synchronisé avec succès"

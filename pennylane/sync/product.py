@@ -155,6 +155,6 @@ def _upsert(pl_data: dict):
 def _handle_delete(pl_id: int):
 	existing = frappe.db.get_value("Pennylane Product", {"pennylane_id": pl_id}, "name")
 	if existing:
-		frappe.db.set_value("Pennylane Product", existing, "sync_status", "Failed")
+		frappe.db.set_value("Pennylane Product", existing, "sync_status", "Deleted")
 	write_log(direction="pull", resource_type="product", operation="delete",
 		status="Success", pennylane_id=pl_id)
