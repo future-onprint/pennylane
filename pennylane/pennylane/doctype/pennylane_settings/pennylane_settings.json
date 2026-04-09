@@ -23,6 +23,8 @@
   "column_break_sync",
   "sync_quotes",
   "sync_products",
+  "sync_from_date_section",
+  "sync_from_date",
   "notifications_section",
   "notify_on_failure",
   "webhooks_tab",
@@ -45,6 +47,8 @@
   "column_break_force_sync",
   "force_sync_quotes",
   "force_sync_products",
+  "log_retention_section",
+  "log_retention_days",
   "cursor_section",
   "customer_changelog_cursor",
   "invoice_changelog_cursor",
@@ -161,6 +165,12 @@
    "label": "Products"
   },
   {
+   "description": "Only import data created on or after this date. Used by Force Full Re-sync and by the \"Position Cursors\" button to fast-forward the hourly sync starting point.",
+   "fieldname": "sync_from_date_section",
+   "fieldtype": "Section Break",
+   "label": "Sync Start Date"
+  },
+  {
    "fieldname": "notifications_section",
    "fieldtype": "Section Break",
    "label": "Notifications"
@@ -229,7 +239,7 @@
   {
    "description": "Pennylane subscription ID. Set automatically when the webhook is registered.",
    "fieldname": "webhook_subscription_id",
-   "fieldtype": "Int",
+   "fieldtype": "Data",
    "label": "Subscription ID",
    "read_only": 1
   },
@@ -271,6 +281,12 @@
    "label": "Force Full Re-sync"
   },
   {
+   "description": "Leave empty to import everything. Used by Force Full Re-sync (date filter only applies to invoices) and by \"Position Cursors\" to fast-forward all changelogs to this date.",
+   "fieldname": "sync_from_date",
+   "fieldtype": "Date",
+   "label": "Start Date"
+  },
+  {
    "default": "0",
    "fieldname": "force_sync_customers",
    "fieldtype": "Check",
@@ -297,6 +313,18 @@
    "fieldname": "force_sync_products",
    "fieldtype": "Check",
    "label": "Products"
+  },
+  {
+   "fieldname": "log_retention_section",
+   "fieldtype": "Section Break",
+   "label": "Log Retention"
+  },
+  {
+   "default": "30",
+   "description": "Sync logs older than this number of days are automatically deleted by the daily cleanup task. Set to 0 to disable automatic cleanup.",
+   "fieldname": "log_retention_days",
+   "fieldtype": "Int",
+   "label": "Log Retention (days)"
   },
   {
    "description": "Read-only cursors that track the last processed position in each Pennylane changelog. They advance automatically with each sync run.",
@@ -335,7 +363,7 @@
  ],
  "issingle": 1,
  "links": [],
- "modified": "2026-04-09 18:00:00.000000",
+ "modified": "2026-04-09 19:04:18.024607",
  "modified_by": "kylian.mallet@sklav.group",
  "module": "Pennylane",
  "name": "Pennylane Settings",

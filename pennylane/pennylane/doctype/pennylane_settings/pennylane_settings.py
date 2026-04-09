@@ -25,10 +25,12 @@ class PennylaneSettings(Document):
 		invoice_changelog_cursor: DF.Data | None
 		is_enabled: DF.Check
 		last_connection_test: DF.Datetime | None
+		log_retention_days: DF.Int
 		notify_on_failure: DF.Check
 		product_changelog_cursor: DF.Data | None
 		quote_changelog_cursor: DF.Data | None
 		sync_customers: DF.Check
+		sync_from_date: DF.Date | None
 		sync_invoices: DF.Check
 		sync_products: DF.Check
 		sync_quotes: DF.Check
@@ -37,7 +39,7 @@ class PennylaneSettings(Document):
 		webhook_event_quote_created: DF.Check
 		webhook_registered_at: DF.Datetime | None
 		webhook_secret: DF.Password | None
-		webhook_subscription_id: DF.Int
+		webhook_subscription_id: DF.Data | None
 		webhook_url: DF.Data | None
 	# end: auto-generated types
 
@@ -120,7 +122,7 @@ class PennylaneSettings(Document):
 		client = PennylaneClient.from_settings()
 		delete_subscription(client)
 
-		self.webhook_subscription_id = 0
+		self.webhook_subscription_id = None
 		self.webhook_registered_at = None
 		# Keep webhook_secret in case the user re-enables (Pennylane will issue a new one anyway).
 
@@ -161,7 +163,7 @@ class PennylaneSettings(Document):
 			self.webhook_event_quote_created = int("quote.created" in remote_events)
 			self.webhook_event_dms_file_created = int("dms_file.created" in remote_events)
 		else:
-			self.webhook_subscription_id = 0
+			self.webhook_subscription_id = None
 			self.webhook_registered_at = None
 
 		self.save(ignore_permissions=True)
@@ -229,7 +231,11 @@ class PennylaneSettings(Document):
 			jobs.append("customers")
 
 		if self.force_sync_invoices:
-			frappe.enqueue("pennylane.sync.invoice.full_sync_invoices", queue="long")
+			frappe.enqueue(
+				"pennylane.sync.invoice.full_sync_invoices",
+				queue="long",
+				from_date=str(self.sync_from_date) if self.sync_from_date else None,
+			)
 			jobs.append("invoices")
 
 		if self.force_sync_quotes:
