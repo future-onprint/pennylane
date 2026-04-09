@@ -264,8 +264,15 @@ def _ensure_customer(frappe_customer_name: str):
 def _ensure_customer_from_pl(pl_customer_id: int, client: PennylaneClient):
 	if not frappe.db.exists("Pennylane Customer", {"pennylane_id": pl_customer_id}):
 		from pennylane.client.customers import get_customer
+		from pennylane.client.exceptions import PennylaneNotFoundError
 		from pennylane.sync.customer import _upsert as upsert_customer
-		upsert_customer(get_customer(client, pl_customer_id), client)
+		try:
+			upsert_customer(get_customer(client, pl_customer_id), client)
+		except PennylaneNotFoundError:
+			frappe.log_error(
+				f"Customer {pl_customer_id} not found in Pennylane — skipping auto-create.",
+				"Pennylane _ensure_customer_from_pl",
+			)
 
 
 def _try_attach_pdf(doc, pl_data: dict) -> None:

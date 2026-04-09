@@ -6,6 +6,9 @@ import frappe
 import frappe.utils
 
 
+_OPERATION_MAP = {"insert": "create"}
+
+
 def write_log(
 	direction: str,
 	resource_type: str,
@@ -22,7 +25,7 @@ def write_log(
 	log = frappe.new_doc("Pennylane Sync Log")
 	log.direction = direction
 	log.resource_type = resource_type
-	log.operation = operation
+	log.operation = _OPERATION_MAP.get(operation, operation)
 	log.status = status
 	log.frappe_doctype = frappe_doctype
 	log.frappe_docname = frappe_docname
