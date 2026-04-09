@@ -12,6 +12,10 @@ app_icon = "icon-pennylane"
 # Roles shipped with the app — imported automatically on bench migrate.
 fixtures = [
 	{"dt": "Role", "filters": [["name", "=", "Pennylane Manager"]]},
+	{"dt": "Number Card", "filters": [["module", "=", "Pennylane"]]},
+	{"dt": "Workspace", "filters": [["name", "=", "Pennylane"]]},
+	{"dt": "Pennylane VAT Rate"},
+	{"dt": "Pennylane Unit"},
 ]
 
 # Apps
@@ -93,7 +97,7 @@ add_to_apps_screen = [
 # Installation
 # ------------
 
-# before_install = "pennylane.install.before_install"
+before_install = "pennylane.install.before_install"
 after_install = "pennylane.install.after_install"
 
 # Uninstallation
@@ -172,6 +176,9 @@ scheduler_events = {
 	],
 	"hourly": [
 		"pennylane.tasks.hourly",
+	],
+	"daily": [
+		"pennylane.tasks.daily",
 	],
 }
 

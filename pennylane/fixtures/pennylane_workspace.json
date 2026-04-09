@@ -1,0 +1,58 @@
+[
+ {
+  "app": "pennylane",
+  "charts": [
+   {
+    "chart_name": "Pennylane Customer Invoices Amounts Daily",
+    "label": "Invoices Amount Envolution"
+   },
+   {
+    "chart_name": "Pennylane Customer Quotes Amounts Daily",
+    "label": "Quotes Amounts Evolution"
+   }
+  ],
+  "content": "[{\"id\":\"-flgjXfLtf\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Total Products\",\"col\":3}},{\"id\":\"zVPMm20gQF\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Total Customers\",\"col\":3}},{\"id\":\"XxJM-Vfibs\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Total Invoices\",\"col\":3}},{\"id\":\"GY_hvXZUOY\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Total Quotes\",\"col\":3}},{\"id\":\"7syo0vNtgq\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Quotes Amounts Evolution\",\"col\":6}},{\"id\":\"oswmVrBacF\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Invoices Amount Envolution\",\"col\":6}},{\"id\":\"JRPf-ZtcBl\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"y841_5GMXe\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Shortcuts</span>\",\"col\":12}},{\"id\":\"F3uxIW6hDp\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Invoices\",\"col\":4}},{\"id\":\"Rj0bZlrE9B\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Quotes\",\"col\":4}},{\"id\":\"CGR5rzrjfU\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Customers\",\"col\":4}},{\"id\":\"0No8E2hyH0\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"mUEt19KsJw\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Ressources</span>\",\"col\":12}},{\"id\":\"UV_UveWhvp\",\"type\":\"card\",\"data\":{\"card_name\":\"Sales\",\"col\":6}},{\"id\":\"mym0cmwzJw\",\"type\":\"card\",\"data\":{\"card_name\":\"Advanced\",\"col\":6}}]",
+  "custom_blocks": [],
+  "doctype": "Workspace",
+  "for_user": "",
+  "hide_custom": 0,
+  "icon": "",
+  "is_hidden": 0,
+  "label": "Pennylane",
+  "links": [
+   {"description": "Manage sales ressources in Pennylane from the Frappe application.", "hidden": 0, "is_query_report": 0, "label": "Sales", "link_count": 4, "link_type": "DocType", "onboard": 0, "type": "Card Break"},
+   {"hidden": 0, "is_query_report": 0, "label": "Invoices", "link_count": 0, "link_to": "Pennylane Customer Invoice", "link_type": "DocType", "onboard": 0, "type": "Link"},
+   {"hidden": 0, "is_query_report": 0, "label": "Quotes", "link_count": 0, "link_to": "Pennylane Customer Quote", "link_type": "DocType", "onboard": 0, "type": "Link"},
+   {"hidden": 0, "is_query_report": 0, "label": "Products", "link_count": 0, "link_to": "Pennylane Product", "link_type": "DocType", "onboard": 0, "type": "Link"},
+   {"hidden": 0, "is_query_report": 0, "label": "Customers", "link_count": 0, "link_to": "Pennylane Customer", "link_type": "DocType", "onboard": 0, "type": "Link"},
+   {"description": "Access to the advanced ressources such as settings and sync status.", "hidden": 0, "is_query_report": 0, "label": "Advanced", "link_count": 3, "link_type": "DocType", "onboard": 0, "type": "Card Break"},
+   {"hidden": 0, "is_query_report": 0, "label": "Settings", "link_count": 0, "link_to": "Pennylane Settings", "link_type": "DocType", "onboard": 0, "type": "Link"},
+   {"hidden": 0, "is_query_report": 0, "label": "Sync Queue", "link_count": 0, "link_to": "Pennylane Sync Queue", "link_type": "DocType", "onboard": 0, "type": "Link"},
+   {"hidden": 0, "is_query_report": 0, "label": "Sync Logs", "link_count": 0, "link_to": "Pennylane Sync Log", "link_type": "DocType", "onboard": 0, "type": "Link"}
+  ],
+  "module": "Pennylane",
+  "name": "Pennylane",
+  "number_cards": [
+   {"label": "Total Customers", "number_card_name": "Pennylane Customer Count"},
+   {"label": "Total Invoices", "number_card_name": "Pennylane Customer Invoice Count"},
+   {"label": "Total Products", "number_card_name": "Pennylane Products Count"},
+   {"label": "Total Quotes", "number_card_name": "Pennylane Customer Quote Count"}
+  ],
+  "parent_page": "",
+  "public": 1,
+  "quick_lists": [],
+  "restrict_to_domain": "",
+  "roles": [
+   {"role": "System Manager"},
+   {"role": "Pennylane Manager"}
+  ],
+  "sequence_id": 1.0,
+  "shortcuts": [
+   {"color": "Grey", "doc_view": "List", "label": "Invoices", "link_to": "Pennylane Customer Invoice", "stats_filter": "[]", "type": "DocType"},
+   {"color": "Grey", "doc_view": "List", "label": "Quotes", "link_to": "Pennylane Customer Quote", "stats_filter": "[]", "type": "DocType"},
+   {"color": "Grey", "doc_view": "List", "label": "Customers", "link_to": "Pennylane Customer", "stats_filter": "[]", "type": "DocType"}
+  ],
+  "title": "Pennylane",
+  "type": "Workspace"
+ }
+]

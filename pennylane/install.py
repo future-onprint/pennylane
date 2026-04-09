@@ -269,6 +269,12 @@ _UNITS: list[dict] = [
 # Install hooks
 # ---------------------------------------------------------------------------
 
+def before_install():
+	"""Remove stale Desktop Icon left over from a previous installation."""
+	if frappe.db.exists("Desktop Icon", "Pennylane"):
+		frappe.db.delete("Desktop Icon", {"name": "Pennylane"})
+
+
 def after_install():
 	_ensure_pennylane_manager_role()
 	_seed_vat_rates()
