@@ -9,11 +9,13 @@ from pennylane.client.invoices import (
 	create_invoice,
 	get_changelog,
 	get_invoice,
+	get_invoice_lines,
 	list_invoices,
 	update_invoice,
 )
 from pennylane.mappers.invoice import from_pennylane, to_pennylane
-from pennylane.sync.utils import enqueue_sync, is_integration_enabled, write_log
+from pennylane.mappers import parse_pennylane_dt
+from pennylane.sync.utils import enqueue_sync, is_integration_enabled, notify_full_sync_complete, set_creation, write_log
 
 _SYNC_FLAG = "pennylane_sync_source"
 
@@ -34,7 +36,7 @@ def on_invoice_save(doc, method=None):
 	settings = frappe.get_cached_doc("Pennylane Settings")
 	if not settings.sync_invoices:
 		return
-	enqueue_sync("pennylane.sync.invoice.push_invoice", doc_name=doc.name, finalized=False)
+	enqueue_sync("customer_invoice", "Pennylane Customer Invoice", doc.name, operation="update", finalized=False)
 
 
 def on_invoice_submit(doc, method=None):
@@ -46,7 +48,7 @@ def on_invoice_submit(doc, method=None):
 	settings = frappe.get_cached_doc("Pennylane Settings")
 	if not settings.sync_invoices:
 		return
-	enqueue_sync("pennylane.sync.invoice.push_invoice", doc_name=doc.name, finalized=True)
+	enqueue_sync("customer_invoice", "Pennylane Customer Invoice", doc.name, operation="update", finalized=True)
 
 
 def on_invoice_cancel(doc, method=None):
@@ -128,8 +130,18 @@ def pull_invoices():
 
 	client = PennylaneClient.from_settings()
 	cursor = settings.invoice_changelog_cursor or None
+	start_date = f"{settings.sync_from_date}T00:00:00Z" if (not cursor and settings.sync_from_date) else None
 
-	resp = get_changelog(client, cursor=cursor)
+	try:
+		resp = get_changelog(client, cursor=cursor, start_date=start_date)
+	except Exception as exc:
+		if "cursor" in str(exc).lower():
+			frappe.log_error(str(exc), "Pennylane pull_invoices: invalid cursor — resetting")
+			frappe.db.set_value("Pennylane Settings", "Pennylane Settings", "invoice_changelog_cursor", None)
+			resp = get_changelog(client, cursor=None, start_date=start_date)
+		else:
+			raise
+
 	items = resp.get("items", [])
 
 	for change in items:
@@ -148,37 +160,62 @@ def pull_invoices():
 			)
 			frappe.log_error(str(exc), f"Pennylane pull_invoices id={change.get('id')}")
 
-	next_cursor = (
-		resp.get("next_cursor")
-		if resp.get("has_more")
-		else (items[-1].get("id") if items else cursor)
-	)
+	next_cursor = resp.get("next_cursor") or cursor
 	frappe.db.set_value(
 		"Pennylane Settings", "Pennylane Settings", "invoice_changelog_cursor", next_cursor
 	)
+	frappe.db.commit()
 
 
-def full_sync_invoices():
-	"""Pull all invoices from the list endpoint (force full sync)."""
+def full_sync_invoices(from_date: str | None = None):
+	"""Pull all invoices from the list endpoint (force full sync).
+
+	Args:
+		from_date: Optional ISO date string (YYYY-MM-DD). When provided, only invoices
+		           created on or after this date are imported.
+	"""
 	if not is_integration_enabled():
 		return
 	client = PennylaneClient.from_settings()
-	for pl_invoice in list_invoices(client):
+	params = {}
+	if from_date:
+		params["filter"] = PennylaneClient.build_filter("date", "gteq", from_date)
+	ok = errors = 0
+	for pl_invoice in list_invoices(client, **params):
 		try:
-			_upsert(pl_invoice, client)
+			_upsert(get_invoice(client, pl_invoice["id"]), client, write_sync_log=False)
+			ok += 1
 		except Exception as exc:
+			errors += 1
 			frappe.log_error(str(exc), f"Pennylane full_sync_invoices id={pl_invoice.get('id')}")
+		finally:
+			frappe.db.commit()
 	frappe.db.set_value(
 		"Pennylane Settings", "Pennylane Settings", "invoice_changelog_cursor", None
 	)
+	write_log(
+		direction="pull", resource_type="customer_invoice", operation="full_sync",
+		status="Success" if not errors else "Failed",
+		error_message=f"{ok} imported, {errors} errors" if errors else f"{ok} imported",
+	)
+	notify_full_sync_complete("customer_invoice", ok, errors)
+	frappe.db.commit()
 
 
-def _upsert(pl_data: dict, client: PennylaneClient):
+def _upsert(pl_data: dict, client: PennylaneClient, write_sync_log: bool = True):
 	pl_id = pl_data.get("id")
 
 	pl_customer = pl_data.get("customer") or {}
 	if pl_customer.get("id"):
 		_ensure_customer_from_pl(pl_customer["id"], client)
+
+	pl_quote = pl_data.get("quote") or {}
+	if pl_quote.get("id"):
+		_ensure_quote_from_pl(pl_quote["id"], client)
+
+	# invoice_lines in the GET response is a URL reference — fetch lines separately
+	pl_data = dict(pl_data)
+	pl_data["invoice_lines"] = get_invoice_lines(client, pl_id)
 
 	fields = from_pennylane(pl_data)
 	is_finalized = not fields.pop("_draft", True)
@@ -186,6 +223,7 @@ def _upsert(pl_data: dict, client: PennylaneClient):
 
 	doc_name = frappe.db.get_value("Pennylane Customer Invoice", {"pennylane_id": pl_id}, "name")
 	sync_meta = {"sync_status": "Synced", "last_synced_at": frappe.utils.now_datetime()}
+	pl_created_at = parse_pennylane_dt(pl_data.get("created_at"))
 
 	if doc_name:
 		doc = frappe.get_doc("Pennylane Customer Invoice", doc_name)
@@ -199,6 +237,7 @@ def _upsert(pl_data: dict, client: PennylaneClient):
 			doc.save(ignore_permissions=True)
 
 			if is_cancelled:
+				doc.submit()
 				doc.cancel()
 			elif is_finalized:
 				doc.submit()
@@ -208,16 +247,21 @@ def _upsert(pl_data: dict, client: PennylaneClient):
 				"status": fields.get("status"),
 				"amount": fields.get("amount"),
 				"currency_amount": fields.get("currency_amount"),
+				"source_quote": fields.get("source_quote"),
 				**sync_meta,
 			}
 			frappe.db.set_value("Pennylane Customer Invoice", doc_name, update)
 
+		if pl_created_at:
+			set_creation("Pennylane Customer Invoice", doc_name, pl_created_at)
 		_try_attach_pdf(doc, pl_data)
-		write_log(
-			direction="pull", resource_type="customer_invoice", operation="update",
-			status="Success", frappe_doctype="Pennylane Customer Invoice",
-			frappe_docname=doc_name, pennylane_id=pl_id,
-		)
+		if write_sync_log:
+			write_log(
+				direction="pull", resource_type="customer_invoice", operation="update",
+				status="Success", frappe_doctype="Pennylane Customer Invoice",
+				frappe_docname=doc_name, pennylane_id=pl_id,
+				response_payload=pl_data,
+			)
 	else:
 		doc = frappe.new_doc("Pennylane Customer Invoice")
 		doc.flags[_SYNC_FLAG] = "pennylane"
@@ -227,16 +271,22 @@ def _upsert(pl_data: dict, client: PennylaneClient):
 		doc.insert(ignore_permissions=True)
 
 		if is_cancelled:
+			doc.submit()
 			doc.cancel()
 		elif is_finalized:
 			doc.submit()
 
+		if pl_created_at:
+			set_creation("Pennylane Customer Invoice", doc.name, pl_created_at)
+
 		_try_attach_pdf(doc, pl_data)
-		write_log(
-			direction="pull", resource_type="customer_invoice", operation="create",
-			status="Success", frappe_doctype="Pennylane Customer Invoice",
-			frappe_docname=doc.name, pennylane_id=pl_id,
-		)
+		if write_sync_log:
+			write_log(
+				direction="pull", resource_type="customer_invoice", operation="create",
+				status="Success", frappe_doctype="Pennylane Customer Invoice",
+				frappe_docname=doc.name, pennylane_id=pl_id,
+				response_payload=pl_data,
+			)
 
 
 def _handle_delete(pl_id: int):
@@ -275,6 +325,20 @@ def _ensure_customer_from_pl(pl_customer_id: int, client: PennylaneClient):
 			)
 
 
+def _ensure_quote_from_pl(pl_quote_id: int, client: PennylaneClient):
+	if not frappe.db.exists("Pennylane Customer Quote", {"pennylane_id": pl_quote_id}):
+		from pennylane.client.exceptions import PennylaneNotFoundError
+		from pennylane.client.quotes import get_quote
+		from pennylane.sync.quote import _upsert as upsert_quote
+		try:
+			upsert_quote(get_quote(client, pl_quote_id), client)
+		except PennylaneNotFoundError:
+			frappe.log_error(
+				f"Quote {pl_quote_id} not found in Pennylane — skipping auto-create.",
+				"Pennylane _ensure_quote_from_pl",
+			)
+
+
 def _try_attach_pdf(doc, pl_data: dict) -> None:
 	"""Attempt to attach the PDF from Pennylane; swallow errors to not break sync."""
 	public_file_url = pl_data.get("public_file_url")
@@ -285,6 +349,23 @@ def _try_attach_pdf(doc, pl_data: dict) -> None:
 		attach_pdf(doc, public_file_url, filename)
 	except Exception as exc:
 		frappe.log_error(str(exc), f"Pennylane attach_pdf invoice: {doc.name}")
+
+
+def pull_single(pl_id: int) -> None:
+	"""Pull a single invoice from Pennylane by its Pennylane ID (manual sync)."""
+	if not is_integration_enabled():
+		return
+	client = PennylaneClient.from_settings()
+	try:
+		_upsert(get_invoice(client, pl_id), client)
+	except Exception as exc:
+		write_log(
+			direction="pull", resource_type="customer_invoice",
+			operation="sync", status="Failed",
+			pennylane_id=pl_id, error_message=str(exc),
+		)
+		frappe.log_error(str(exc), f"Pennylane pull_single invoice id={pl_id}")
+		raise
 
 
 def _sync_single_from_webhook(pl_id: int) -> None:

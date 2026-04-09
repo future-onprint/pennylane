@@ -17,7 +17,8 @@ from pennylane.client.customers import (
 	update_customer,
 )
 from pennylane.mappers.customer import from_pennylane, to_pennylane
-from pennylane.sync.utils import enqueue_sync, is_integration_enabled, write_log
+from pennylane.mappers import parse_pennylane_dt
+from pennylane.sync.utils import enqueue_sync, is_integration_enabled, notify_full_sync_complete, set_creation, write_log
 
 _SYNC_FLAG = "pennylane_sync_source"
 
@@ -33,10 +34,8 @@ def on_customer_save(doc, method=None):
 		return  # pulled from API — don't re-push
 	if not is_integration_enabled():
 		return
-	enqueue_sync(
-		"pennylane.sync.customer.push_customer",
-		doc_name=doc.name,
-	)
+	operation = "create" if not frappe.db.get_value("Pennylane Customer", doc.name, "pennylane_id") else "update"
+	enqueue_sync("customer", "Pennylane Customer", doc.name, operation=operation)
 
 
 # ------------------------------------------------------------------
@@ -111,8 +110,18 @@ def pull_customers():
 	client = PennylaneClient.from_settings()
 	settings = frappe.get_cached_doc("Pennylane Settings")
 	cursor = settings.customer_changelog_cursor or None
+	start_date = f"{settings.sync_from_date}T00:00:00Z" if (not cursor and settings.sync_from_date) else None
 
-	resp = get_changelog(client, cursor=cursor)
+	try:
+		resp = get_changelog(client, cursor=cursor, start_date=start_date)
+	except Exception as exc:
+		if "cursor" in str(exc).lower():
+			frappe.log_error(str(exc), "Pennylane pull_customers: invalid cursor — resetting")
+			frappe.db.set_value("Pennylane Settings", "Pennylane Settings", "customer_changelog_cursor", None)
+			resp = get_changelog(client, cursor=None, start_date=start_date)
+		else:
+			raise
+
 	items = resp.get("items", [])
 
 	for change in items:
@@ -136,15 +145,18 @@ def pull_customers():
 			frappe.log_error(str(exc), f"Pennylane pull_customers id={change.get('id')}")
 
 	# Advance cursor for next run
-	next_cursor = resp.get("next_cursor") if resp.get("has_more") else (items[-1].get("id") if items else cursor)
+	next_cursor = resp.get("next_cursor") or cursor
 	frappe.db.set_value("Pennylane Settings", "Pennylane Settings", "customer_changelog_cursor", next_cursor)
+	frappe.db.commit()
 
 
-def _upsert(pl_data: dict, client: PennylaneClient = None):
+def _upsert(pl_data: dict, client: PennylaneClient = None, write_sync_log: bool = True):
 	pl_id = pl_data.get("id")
 	fields = from_pennylane(pl_data)
 
 	existing = frappe.db.get_value("Pennylane Customer", {"pennylane_id": pl_id}, "name")
+
+	pl_created_at = parse_pennylane_dt(pl_data.get("created_at"))
 
 	if existing:
 		doc = frappe.get_doc("Pennylane Customer", existing)
@@ -153,25 +165,36 @@ def _upsert(pl_data: dict, client: PennylaneClient = None):
 		doc.sync_status = "Synced"
 		doc.last_synced_at = frappe.utils.now_datetime()
 		doc.save(ignore_permissions=True)
-		write_log(
-			direction="pull", resource_type="customer", operation="update", status="Success",
-			frappe_doctype="Pennylane Customer", frappe_docname=existing, pennylane_id=pl_id,
-		)
+		if write_sync_log:
+			write_log(
+				direction="pull", resource_type="customer", operation="update", status="Success",
+				frappe_doctype="Pennylane Customer", frappe_docname=existing, pennylane_id=pl_id,
+				response_payload=pl_data,
+			)
 	else:
 		doc = frappe.new_doc("Pennylane Customer")
 		doc.flags[_SYNC_FLAG] = "pennylane"
 		doc.update(fields)
 		doc.sync_status = "Synced"
 		doc.last_synced_at = frappe.utils.now_datetime()
+		if pl_created_at:
+			doc.creation = pl_created_at
 		doc.insert(ignore_permissions=True)
-		write_log(
-			direction="pull", resource_type="customer", operation="create", status="Success",
-			frappe_doctype="Pennylane Customer", frappe_docname=doc.name, pennylane_id=pl_id,
-		)
+		if write_sync_log:
+			write_log(
+				direction="pull", resource_type="customer", operation="create", status="Success",
+				frappe_doctype="Pennylane Customer", frappe_docname=doc.name, pennylane_id=pl_id,
+				response_payload=pl_data,
+			)
 
 	# Sync contacts if we have a Pennylane ID and a client is available
 	if pl_id and client is not None:
 		_sync_contacts(doc, client, pl_id)
+
+	# Update creation AFTER all doc.save() calls to avoid Frappe detecting a mismatch
+	# between the in-memory doc and the DB snapshot on the next save
+	if pl_created_at and existing:
+		set_creation("Pennylane Customer", existing, pl_created_at)
 
 
 def _handle_delete(pl_id: int):
@@ -209,6 +232,22 @@ def _sync_contacts(doc, client: PennylaneClient, pl_customer_id: int) -> None:
 	doc.save(ignore_permissions=True)
 
 
+def pull_single(pl_id: int) -> None:
+	"""Pull a single customer from Pennylane by its Pennylane ID and upsert locally."""
+	if not is_integration_enabled():
+		return
+	client = PennylaneClient.from_settings()
+	try:
+		_upsert(get_customer(client, pl_id), client)
+	except Exception as exc:
+		write_log(
+			direction="pull", resource_type="customer", operation="sync",
+			status="Failed", pennylane_id=pl_id, error_message=str(exc),
+		)
+		frappe.log_error(str(exc), f"Pennylane pull_single customer id={pl_id}")
+		raise
+
+
 def full_sync_customers():
 	"""Pull all customers from the list endpoint (force full sync)."""
 	from pennylane.client.customers import list_customers
@@ -216,9 +255,21 @@ def full_sync_customers():
 	if not is_integration_enabled():
 		return
 	client = PennylaneClient.from_settings()
+	ok = errors = 0
 	for pl_customer in list_customers(client):
 		try:
-			_upsert(pl_customer, client)
+			_upsert(pl_customer, client, write_sync_log=False)
+			ok += 1
 		except Exception as exc:
+			errors += 1
 			frappe.log_error(str(exc), f"Pennylane full_sync_customers id={pl_customer.get('id')}")
+		finally:
+			frappe.db.commit()
 	frappe.db.set_value("Pennylane Settings", "Pennylane Settings", "customer_changelog_cursor", None)
+	write_log(
+		direction="pull", resource_type="customer", operation="full_sync",
+		status="Success" if not errors else "Failed",
+		error_message=f"{ok} imported, {errors} errors" if errors else f"{ok} imported",
+	)
+	notify_full_sync_complete("customer", ok, errors)
+	frappe.db.commit()
