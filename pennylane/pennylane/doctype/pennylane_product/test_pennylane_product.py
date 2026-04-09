@@ -45,7 +45,7 @@ class IntegrationTestPennylaneProduct(IntegrationTestCase):
 			reference="REF-001",
 			unit="hour",
 			vat_rate="FR_200",
-			currency_amount=100.0,
+			unit_price=100.0,
 			description="A test product",
 			external_reference="EXT-001",
 		)
@@ -70,7 +70,7 @@ class IntegrationTestPennylaneProduct(IntegrationTestCase):
 			reference="REF-002",
 			unit="piece",
 			vat_rate="FR_100",
-			currency_amount=50.0,
+			unit_price=50.0,
 			description="desc",
 			external_reference="EXT-002",
 		)
@@ -78,7 +78,7 @@ class IntegrationTestPennylaneProduct(IntegrationTestCase):
 		self.assertEqual(payload["reference"], "REF-002")
 		self.assertEqual(payload["unit"], "piece")
 		self.assertEqual(payload["vat_rate"], "FR_100")
-		self.assertEqual(payload["currency_amount"], "50.0")
+		self.assertEqual(payload["price_before_tax"], "50.0")
 		self.assertEqual(payload["description"], "desc")
 		self.assertEqual(payload["external_reference"], "EXT-002")
 
@@ -93,7 +93,7 @@ class IntegrationTestPennylaneProduct(IntegrationTestCase):
 			"reference": "W-001",
 			"unit": "piece",
 			"vat_rate": "FR_200",
-			"currency_amount": "9.99",
+			"price_before_tax": "9.99",
 			"description": "A widget",
 		}
 		fields = from_pennylane(pl)
@@ -101,7 +101,7 @@ class IntegrationTestPennylaneProduct(IntegrationTestCase):
 		self.assertEqual(fields["pennylane_id"], 123)
 		self.assertEqual(fields["reference"], "W-001")
 		self.assertEqual(fields["unit"], "piece")
-		self.assertEqual(fields["currency_amount"], "9.99")
+		self.assertEqual(fields["unit_price"], "9.99")
 
 	def test_from_pennylane_missing_optional_fields(self):
 		pl = {"id": 456, "label": "_Test Sparse"}

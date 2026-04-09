@@ -15,8 +15,8 @@ def to_pennylane(doc_name: str) -> dict:
 		payload["unit"] = frappe.db.get_value("Pennylane Unit", doc.unit, "code") or doc.unit
 	if doc.vat_rate:
 		payload["vat_rate"] = doc.vat_rate
-	if doc.currency_amount is not None:
-		payload["price_before_tax"] = str(doc.currency_amount)
+	if doc.unit_price is not None:
+		payload["price_before_tax"] = str(doc.unit_price)
 	if doc.currency:
 		payload["currency"] = doc.currency
 	if doc.description:
@@ -33,7 +33,7 @@ def from_pennylane(pl_product: dict) -> dict:
 		"external_reference": pl_product.get("external_reference"),
 		"unit": frappe.db.get_value("Pennylane Unit", {"code": pl_product.get("unit")}, "name"),
 		"vat_rate": pl_product.get("vat_rate"),
-		"currency_amount": pl_product.get("price_before_tax"),
+		"unit_price": pl_product.get("price_before_tax"),
 		"currency": pl_product.get("currency"),
 		"price": pl_product.get("price"),
 		"description": pl_product.get("description"),

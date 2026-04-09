@@ -15,7 +15,7 @@
   "unit",
   "vat_rate",
   "col_break_details",
-  "currency_amount",
+  "unit_price",
   "currency",
   "price",
   "description",
@@ -43,7 +43,7 @@
   },
   {
    "fieldname": "pennylane_id",
-   "fieldtype": "Int",
+   "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Pennylane ID",
    "read_only": 1
@@ -86,7 +86,7 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "currency_amount",
+   "fieldname": "unit_price",
    "fieldtype": "Currency",
    "label": "Unit Price",
    "options": "currency"
@@ -122,7 +122,7 @@
   }
  ],
  "links": [],
- "modified": "2026-04-09 16:28:52.973206",
+ "modified": "2026-04-09 18:08:31.150220",
  "modified_by": "kylian.mallet@sklav.group",
  "module": "Pennylane",
  "name": "Pennylane Product",
@@ -150,7 +150,8 @@
   }
  ],
  "row_format": "Dynamic",
- "search_fields": "label,reference,external_reference",
+ "search_fields": "reference,price",
+ "show_title_field_in_link": 1,
  "sort_field": "creation",
  "sort_order": "DESC",
  "states": [],

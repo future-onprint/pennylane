@@ -7,8 +7,8 @@ frappe.ui.form.on("Pennylane Invoice Line", {
 			frappe.model.set_value(cdt, cdn, "label", product.label);
 			frappe.model.set_value(cdt, cdn, "unit", product.unit || "");
 			frappe.model.set_value(cdt, cdn, "vat_rate", product.vat_rate || "");
-			if (product.currency_amount) {
-				frappe.model.set_value(cdt, cdn, "unit_price", product.currency_amount);
+			if (product.unit_price) {
+				frappe.model.set_value(cdt, cdn, "unit_price", product.unit_price);
 			}
 		});
 	},

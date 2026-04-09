@@ -10,16 +10,18 @@ class PennylaneProduct(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
-		currency_amount: DF.Currency
+		currency: DF.Link | None
+		unit_price: DF.Currency
 		description: DF.SmallText | None
 		external_reference: DF.Data | None
 		label: DF.Data
 		last_synced_at: DF.Datetime | None
 		pennylane_id: DF.Int
+		price: DF.Currency
 		reference: DF.Data | None
-		sync_status: DF.Literal["Pending", "Synced", "Failed"]
-		unit: DF.Data | None
-		vat_rate: DF.Data | None
+		sync_status: DF.Literal["Pending", "Synced", "Failed", "Deleted"]
+		unit: DF.Link | None
+		vat_rate: DF.Link | None
 	# end: auto-generated types
 
 	pass
