@@ -19,8 +19,14 @@ def list_quotes(client: PennylaneClient, **params):
 	yield from client.paginate("/quotes", params=params)
 
 
-def get_changelog(client: PennylaneClient, cursor: str | None = None) -> dict:
+def get_quote_lines(client: PennylaneClient, quote_id: int) -> list:
+	return list(client.paginate(f"/quotes/{quote_id}/invoice_lines"))
+
+
+def get_changelog(client: PennylaneClient, cursor: str | None = None, start_date: str | None = None) -> dict:
 	params = {"limit": 1000}
 	if cursor:
 		params["cursor"] = cursor
+	elif start_date:
+		params["start_date"] = start_date
 	return client.get("/changelogs/quotes", params=params)

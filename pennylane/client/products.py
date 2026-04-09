@@ -19,8 +19,10 @@ def list_products(client: PennylaneClient, **params):
 	yield from client.paginate("/products", params=params)
 
 
-def get_changelog(client: PennylaneClient, cursor: str | None = None) -> dict:
+def get_changelog(client: PennylaneClient, cursor: str | None = None, start_date: str | None = None) -> dict:
 	params = {"limit": 1000}
 	if cursor:
 		params["cursor"] = cursor
+	elif start_date:
+		params["start_date"] = start_date
 	return client.get("/changelogs/products", params=params)
