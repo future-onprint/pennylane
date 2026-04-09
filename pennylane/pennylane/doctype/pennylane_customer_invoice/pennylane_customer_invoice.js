@@ -1,7 +1,7 @@
 frappe.ui.form.on("Pennylane Customer Invoice", {
 	refresh(frm) {
 		if (!frm.is_new()) {
-			frm.add_custom_button(__("Sync"), () => pennylane_sync_now(frm), __("Pennylane"));
+			frm.add_custom_button(__("Sync"), () => pennylane_sync_now(frm));
 		}
 	},
 });
