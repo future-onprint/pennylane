@@ -6,8 +6,11 @@ const SYNC_STATUS_COLOR = {
 };
 
 frappe.listview_settings["Pennylane Customer Invoice"] = {
-	get_indicator(doc) {
-		return [__(doc.sync_status), SYNC_STATUS_COLOR[doc.sync_status] || "grey", `sync_status,=,${doc.sync_status}`];
+	formatters: {
+		sync_status(value) {
+			const color = SYNC_STATUS_COLOR[value] || "grey";
+			return `<span class="indicator-pill ${color}">${__(value)}</span>`;
+		},
 	},
 	onload(listview) {
 		listview.page.add_inner_button(__("Clean up Deleted"), () => {
