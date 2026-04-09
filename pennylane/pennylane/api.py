@@ -2,6 +2,7 @@
 
 import frappe
 
+from pennylane.client.exceptions import PennylaneNotFoundError
 from pennylane.sync.utils import is_integration_enabled
 
 _DISPATCH = {
@@ -29,8 +30,15 @@ def sync_now(doctype: str, docname: str):
 	if not method:
 		frappe.throw(frappe._("Unsupported DocType: {0}").format(doctype))
 
-	frappe.get_attr(method)(docname)
+	try:
+		frappe.get_attr(method)(docname)
+	except PennylaneNotFoundError:
+		frappe.db.set_value(doctype, docname, "sync_status", "Deleted")
+		frappe.db.commit()
+		return {"status": "deleted"}
+
 	frappe.db.commit()
+	return {"status": "synced"}
 
 
 @frappe.whitelist()

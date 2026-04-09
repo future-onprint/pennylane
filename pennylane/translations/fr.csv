@@ -194,6 +194,7 @@ Deleted,Supprimé
 "This will permanently delete all records marked as Deleted. Continue?","Cela supprimera définitivement tous les enregistrements marqués comme Supprimé. Continuer ?"
 "{0} record(s) deleted","{0} enregistrement(s) supprimé(s)"
 "Cleaning up…","Nettoyage en cours…"
+"This record no longer exists in Pennylane and has been marked as Deleted.","Cet enregistrement n'existe plus dans Pennylane et a été marqué comme Supprimé."
 "Sync","Synchroniser"
 "Syncing with Pennylane…","Synchronisation avec Pennylane…"
 "Synced successfully","Synchronisé avec succès"

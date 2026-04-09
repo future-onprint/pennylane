@@ -24,7 +24,14 @@ function pennylane_sync_now(frm) {
 		callback(r) {
 			if (!r.exc) {
 				frm.reload_doc();
-				frappe.show_alert({ message: __("Synced successfully"), indicator: "green" });
+				if (r.message.status === "deleted") {
+					frappe.show_alert({
+						message: __("This record no longer exists in Pennylane and has been marked as Deleted."),
+						indicator: "orange",
+					});
+				} else {
+					frappe.show_alert({ message: __("Synced successfully"), indicator: "green" });
+				}
 			}
 		},
 	});
