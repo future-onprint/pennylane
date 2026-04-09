@@ -189,6 +189,10 @@ Webhooks,Webhooks
 "Telephone Number","Numéro de téléphone"
 "Mobile Number","Numéro de mobile"
 Rate,Taux
+"Sync Now","Synchroniser maintenant"
+"Pennylane","Pennylane"
+"Syncing with Pennylane…","Synchronisation avec Pennylane…"
+"Synced successfully","Synchronisé avec succès"
 "Price (incl. VAT)","Prix (TVA incluse)"
 "Units are managed by the system and cannot be modified.","Les unités sont gérées par le système et ne peuvent pas être modifiées."
 "Pennylane Unit","Unité Pennylane"
