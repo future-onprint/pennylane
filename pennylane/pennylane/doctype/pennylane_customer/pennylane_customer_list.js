@@ -1,6 +1,6 @@
 frappe.listview_settings["Pennylane Customer"] = {
 	onload(listview) {
-		listview.page.add_action_item(__("Clean up Deleted"), () => {
+		listview.page.add_inner_button(__("Clean up Deleted"), () => {
 			pennylane_cleanup_deleted(listview, "Pennylane Customer");
 		});
 	},
