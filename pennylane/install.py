@@ -247,12 +247,32 @@ def _build_entry(code: str) -> dict:
 
 
 # ---------------------------------------------------------------------------
+# Units — all units available in the Pennylane API.
+# ---------------------------------------------------------------------------
+
+_UNITS: list[dict] = [
+	{"code": "piece",    "label": "Unité",         "symbol": "unité"},
+	{"code": "hour",     "label": "Heure",          "symbol": "heure"},
+	{"code": "day",      "label": "Jour",            "symbol": "jour"},
+	{"code": "month",    "label": "Mois",            "symbol": "mois"},
+	{"code": "kilogram", "label": "Kilogramme",      "symbol": "kg"},
+	{"code": "m2",       "label": "Mètre carré",     "symbol": "m²"},
+	{"code": "m3",       "label": "Mètre cube",      "symbol": "m³"},
+	{"code": "ton",      "label": "Tonne",           "symbol": "tonne"},
+	{"code": "mg",       "label": "Milligramme",     "symbol": "mg"},
+	{"code": "percent",  "label": "Pourcentage",     "symbol": "%"},
+	{"code": "no_unit",  "label": "Sans unité",      "symbol": "(pas d'unité)"},
+]
+
+
+# ---------------------------------------------------------------------------
 # Install hooks
 # ---------------------------------------------------------------------------
 
 def after_install():
 	_ensure_pennylane_manager_role()
 	_seed_vat_rates()
+	_seed_units()
 	_ensure_webhook_secret()
 	frappe.db.commit()
 	print("Pennylane: app installed successfully.")
@@ -280,6 +300,17 @@ def _seed_vat_rates():
 		frappe.get_doc({"doctype": "Pennylane VAT Rate", **entry}).insert(ignore_permissions=True)
 		created += 1
 	print(f"Pennylane: seeded {created} VAT rate(s) ({len(_VAT_RATE_CODES)} total).")
+
+
+def _seed_units():
+	"""Insert Pennylane units if they don't already exist. Safe to re-run."""
+	created = 0
+	for unit in _UNITS:
+		if frappe.db.exists("Pennylane Unit", unit["code"]):
+			continue
+		frappe.get_doc({"doctype": "Pennylane Unit", **unit}).insert(ignore_permissions=True)
+		created += 1
+	print(f"Pennylane: seeded {created} unit(s) ({len(_UNITS)} total).")
 
 
 def _ensure_webhook_secret():

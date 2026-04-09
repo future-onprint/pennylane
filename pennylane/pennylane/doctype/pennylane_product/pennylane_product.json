@@ -67,10 +67,10 @@
    "label": "Details"
   },
   {
-   "description": "e.g. hour, piece, day",
    "fieldname": "unit",
-   "fieldtype": "Data",
-   "label": "Unit"
+   "fieldtype": "Link",
+   "label": "Unit",
+   "options": "Pennylane Unit"
   },
   {
    "fieldname": "vat_rate",

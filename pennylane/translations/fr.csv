@@ -189,6 +189,20 @@ Webhooks,Webhooks
 "Telephone Number","Numéro de téléphone"
 "Mobile Number","Numéro de mobile"
 Rate,Taux
+"Units are managed by the system and cannot be modified.","Les unités sont gérées par le système et ne peuvent pas être modifiées."
+"Pennylane Unit","Unité Pennylane"
+Symbol,Symbole
+"Unité","Unité"
+"Heure","Heure"
+"Jour","Jour"
+"Mois","Mois"
+"Kilogramme","Kilogramme"
+"Mètre carré","Mètre carré"
+"Mètre cube","Mètre cube"
+"Tonne","Tonne"
+"Milligramme","Milligramme"
+"Pourcentage","Pourcentage"
+"Sans unité","Sans unité"
 Sales,Ventes
 Invoices,Factures
 Settings,Paramètres
