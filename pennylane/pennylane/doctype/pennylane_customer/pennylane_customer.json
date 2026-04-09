@@ -1,6 +1,6 @@
 {
  "actions": [],
- "autoname": "field:customer_name",
+ "autoname": "hash",
  "creation": "2026-04-08 00:00:00",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -38,9 +38,10 @@
   "payment_conditions",
   "billing_iban",
   "section_tax",
-  "vat_number",
   "reg_no",
   "ledger_account_number",
+  "column_break_ejpn",
+  "vat_number",
   "section_misc",
   "external_reference",
   "notes",
@@ -53,8 +54,7 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Customer Name",
-   "reqd": 1,
-   "unique": 1
+   "reqd": 1
   },
   {
    "default": "company",
@@ -70,7 +70,7 @@
   },
   {
    "fieldname": "pennylane_id",
-   "fieldtype": "Int",
+   "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Pennylane ID",
    "read_only": 1
@@ -280,6 +280,10 @@
    "label": "Contacts",
    "options": "Pennylane Customer Contact",
    "read_only": 1
+  },
+  {
+   "fieldname": "column_break_ejpn",
+   "fieldtype": "Column Break"
   }
  ],
  "links": [
@@ -292,7 +296,7 @@
    "link_fieldname": "customer"
   }
  ],
- "modified": "2026-04-08 17:31:23.152199",
+ "modified": "2026-04-09 21:48:38.436768",
  "modified_by": "kylian.mallet@sklav.group",
  "module": "Pennylane",
  "name": "Pennylane Customer",
@@ -321,6 +325,7 @@
  ],
  "row_format": "Dynamic",
  "search_fields": "customer_name,email,pennylane_id,external_reference",
+ "show_title_field_in_link": 1,
  "sort_field": "creation",
  "sort_order": "DESC",
  "states": [],

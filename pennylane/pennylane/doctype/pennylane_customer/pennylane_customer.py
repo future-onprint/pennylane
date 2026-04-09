@@ -32,13 +32,13 @@ class PennylaneCustomer(Document):
 		ledger_account_number: DF.Data | None
 		notes: DF.SmallText | None
 		payment_conditions: DF.Literal["upon_receipt", "custom", "7_days", "15_days", "30_days", "30_days_end_of_month", "45_days", "45_days_end_of_month", "60_days"]
-		pennylane_id: DF.Int
+		pennylane_id: DF.Data | None
 		phone: DF.Data | None
 		postal_code: DF.Data | None
 		recipient: DF.Data | None
 		reference: DF.Data | None
 		reg_no: DF.Data | None
-		sync_status: DF.Literal["Pending", "Synced", "Failed"]
+		sync_status: DF.Literal["Pending", "Synced", "Failed", "Deleted"]
 		vat_number: DF.Data | None
 	# end: auto-generated types
 
