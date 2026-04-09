@@ -13,11 +13,31 @@ frappe.listview_settings["Pennylane Customer"] = {
 		},
 	},
 	onload(listview) {
+		listview.page.add_inner_button(__("Sync All"), () => {
+			pennylane_sync_all(listview, "Pennylane Customer");
+		});
 		listview.page.add_inner_button(__("Clean up Deleted"), () => {
 			pennylane_cleanup_deleted(listview, "Pennylane Customer");
 		});
 	},
 };
+
+function pennylane_sync_all(listview, doctype) {
+	frappe.call({
+		method: "pennylane.pennylane.api.sync_all",
+		args: { doctype },
+		freeze: true,
+		freeze_message: __("Syncing…"),
+		callback(r) {
+			if (!r.exc) {
+				frappe.show_alert({
+					message: __("Sync started in background"),
+					indicator: "blue",
+				});
+			}
+		},
+	});
+}
 
 function pennylane_cleanup_deleted(listview, doctype) {
 	frappe.confirm(

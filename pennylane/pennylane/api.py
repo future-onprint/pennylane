@@ -12,6 +12,13 @@ _DISPATCH = {
 	"Pennylane Customer Quote": "pennylane.sync.quote.push_quote",
 }
 
+_PULL_DISPATCH = {
+	"Pennylane Product": "pennylane.sync.product.pull_products",
+	"Pennylane Customer": "pennylane.sync.customer.pull_customers",
+	"Pennylane Customer Invoice": "pennylane.sync.invoice.pull_invoices",
+	"Pennylane Customer Quote": "pennylane.sync.quote.pull_quotes",
+}
+
 _DELETABLE_DOCTYPES = {
 	"Pennylane Product",
 	"Pennylane Customer",
@@ -39,6 +46,34 @@ def sync_now(doctype: str, docname: str):
 
 	frappe.db.commit()
 	return {"status": "synced"}
+
+
+@frappe.whitelist()
+def sync_all(doctype: str):
+	"""Pull the latest changes from Pennylane for a resource type (enqueued)."""
+	if not is_integration_enabled():
+		frappe.throw(frappe._("Pennylane integration is not enabled."))
+
+	method = _PULL_DISPATCH.get(doctype)
+	if not method:
+		frappe.throw(frappe._("Unsupported DocType: {0}").format(doctype))
+
+	frappe.enqueue(method, queue="default", enqueue_after_commit=True)
+	return {"status": "queued"}
+
+
+@frappe.whitelist()
+def delete_doc(doctype: str, docname: str):
+	"""Permanently delete a single record marked as Deleted."""
+	if doctype not in _DELETABLE_DOCTYPES:
+		frappe.throw(frappe._("Unsupported DocType: {0}").format(doctype))
+
+	status = frappe.db.get_value(doctype, docname, "sync_status")
+	if status != "Deleted":
+		frappe.throw(frappe._("Only records marked as Deleted can be deleted this way."))
+
+	frappe.delete_doc(doctype, docname, ignore_permissions=True, force=True)
+	frappe.db.commit()
 
 
 @frappe.whitelist()

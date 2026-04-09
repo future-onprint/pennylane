@@ -1,6 +1,11 @@
 frappe.ui.form.on("Pennylane Customer", {
 	refresh(frm) {
-		if (!frm.is_new()) {
+		if (frm.is_new()) return;
+
+		if (frm.doc.sync_status === "Deleted") {
+			frm.add_custom_button(__("Delete"), () => pennylane_delete_doc(frm))
+				.addClass("btn-danger");
+		} else {
 			frm.add_custom_button(__("Sync"), () => pennylane_sync_now(frm));
 		}
 	},
@@ -35,6 +40,25 @@ function pennylane_sync_now(frm) {
 			}
 		},
 	});
+}
+
+function pennylane_delete_doc(frm) {
+	frappe.confirm(
+		__("Permanently delete this record from Frappe?"),
+		() => {
+			frappe.call({
+				method: "pennylane.pennylane.api.delete_doc",
+				args: { doctype: frm.doctype, docname: frm.docname },
+				freeze: true,
+				freeze_message: __("Deleting…"),
+				callback(r) {
+					if (!r.exc) {
+						frappe.set_route("List", frm.doctype);
+					}
+				},
+			});
+		}
+	);
 }
 
 function update_full_name(frm) {
