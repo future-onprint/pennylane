@@ -1,6 +1,10 @@
 """Scheduled background tasks wired up in hooks.py."""
 
+import json
+
 import frappe
+
+from pennylane.sync.utils import is_integration_enabled
 
 
 def hourly():
@@ -13,7 +17,8 @@ def hourly():
 
 def process_sync_queue():
 	"""Retry failed push jobs — runs every minute via 'all' scheduler bucket."""
-	import frappe.utils
+	if not is_integration_enabled():
+		return
 
 	pending = frappe.get_all(
 		"Pennylane Sync Queue",
@@ -22,7 +27,7 @@ def process_sync_queue():
 			"retry_count": ["<", 5],
 			"next_retry_at": ["<=", frappe.utils.now_datetime()],
 		},
-		fields=["name", "resource_type", "frappe_doctype", "frappe_docname", "retry_count"],
+		fields=["name", "resource_type", "frappe_doctype", "frappe_docname", "retry_count", "payload"],
 		order_by="creation asc",
 		limit=50,
 	)
@@ -31,10 +36,11 @@ def process_sync_queue():
 		frappe.db.set_value("Pennylane Sync Queue", item.name, "status", "Processing")
 		try:
 			_dispatch_queue_item(item)
-			frappe.db.set_value("Pennylane Sync Queue", item.name, "status", "Success")
+			# Success — remove from queue (Sync Log already records it)
+			frappe.delete_doc("Pennylane Sync Queue", item.name, ignore_permissions=True, force=True)
 		except Exception as exc:
 			retry_count = item.retry_count + 1
-			next_retry = frappe.utils.add_to_date(frappe.utils.now_datetime(), minutes=2**retry_count)
+			next_retry = frappe.utils.add_to_date(frappe.utils.now_datetime(), minutes=2 ** retry_count)
 			frappe.db.set_value(
 				"Pennylane Sync Queue",
 				item.name,
@@ -60,8 +66,22 @@ def _dispatch_queue_item(item):
 		"product": push_product,
 	}
 	fn = dispatch.get(item.resource_type)
-	if fn:
-		fn(item.frappe_docname)
+	if not fn:
+		return
+
+	kwargs = json.loads(item.payload) if item.payload else {}
+	fn(item.frappe_docname, **kwargs)
+
+
+def daily():
+	"""Delete Sync Logs older than the configured retention period."""
+	retention = frappe.db.get_single_value("Pennylane Settings", "log_retention_days") or 0
+	if not retention:
+		return
+
+	cutoff = frappe.utils.add_days(frappe.utils.nowdate(), -int(retention))
+	frappe.db.delete("Pennylane Sync Log", {"creation": ["<", cutoff]})
+	frappe.db.commit()
 
 
 def _run(method: str, label: str):
