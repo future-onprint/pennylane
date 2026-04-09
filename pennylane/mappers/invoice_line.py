@@ -22,7 +22,7 @@ def lines_to_pennylane(doc_lines: list) -> list:
 		if line.vat_rate:
 			item["vat_rate"] = line.vat_rate
 		if line.unit:
-			item["unit"] = line.unit
+			item["unit"] = frappe.db.get_value("Pennylane Unit", line.unit, "code") or line.unit
 		if line.description:
 			item["description"] = line.description
 		if line.discount:
@@ -72,7 +72,7 @@ def lines_from_pennylane(pl_lines: list) -> list:
 			"quantity": float(line.get("quantity") or 1),
 			"unit_price": float(line.get("raw_currency_unit_price") or 0),
 			"vat_rate": line.get("vat_rate"),
-			"unit": line.get("unit"),
+			"unit": frappe.db.get_value("Pennylane Unit", {"code": line.get("unit")}, "name"),
 			"description": line.get("description"),
 			"discount_type": discount_type,
 			"discount": discount_value,
