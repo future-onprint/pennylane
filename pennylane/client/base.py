@@ -51,17 +51,27 @@ class PennylaneClient:
 	# ------------------------------------------------------------------
 
 	def _throttle(self):
-		"""Block until we are within the 25 req/5s rate limit."""
+		"""Block until we are within the 25 req/5s rate limit.
+
+		Uses a fixed-window counter keyed by time bucket so the counter
+		resets naturally without relying on Redis TTL expiry during retries
+		(the previous approach reset the TTL on every retry, causing an
+		infinite loop once the limit was reached).
+		"""
 		cache = frappe.cache()
 		while True:
-			pipe = cache.pipeline()
-			pipe.incr(_RATE_LIMIT_KEY)
-			pipe.expire(_RATE_LIMIT_KEY, _RATE_LIMIT_WINDOW)
-			count, _ = pipe.execute()
+			bucket = int(time.time() // _RATE_LIMIT_WINDOW)
+			key = f"{_RATE_LIMIT_KEY}:{bucket}"
+			count = cache.incr(key)
+			if count == 1:
+				# First request in this window — set expiry so Redis cleans up
+				cache.expire(key, _RATE_LIMIT_WINDOW * 2)
 			if count <= _RATE_LIMIT_MAX:
 				return
-			# Over limit — sleep a short interval and retry
-			time.sleep(0.2)
+			# Over limit — sleep until the next window starts
+			next_window = (bucket + 1) * _RATE_LIMIT_WINDOW
+			wait = next_window - time.time()
+			time.sleep(max(wait, 0.05))
 
 	# ------------------------------------------------------------------
 	# Core request
