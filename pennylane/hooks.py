@@ -13,7 +13,6 @@ app_icon = "icon-pennylane"
 fixtures = [
 	{"dt": "Role", "filters": [["name", "=", "Pennylane Manager"]]},
 	{"dt": "Number Card", "filters": [["module", "=", "Pennylane"]]},
-	{"dt": "Workspace", "filters": [["name", "=", "Pennylane"]]},
 	{"dt": "Pennylane VAT Rate"},
 	{"dt": "Pennylane Unit"},
 ]
@@ -99,12 +98,12 @@ add_to_apps_screen = [
 
 before_install = "pennylane.install.before_install"
 after_install = "pennylane.install.after_install"
+after_migrate = "pennylane.install.after_migrate"
 
 # Uninstallation
 # ------------
 
-# before_uninstall = "pennylane.uninstall.before_uninstall"
-# after_uninstall = "pennylane.uninstall.after_uninstall"
+before_uninstall = "pennylane.uninstall.before_uninstall"
 
 # Integration Setup
 # ------------------

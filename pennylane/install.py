@@ -269,10 +269,133 @@ _UNITS: list[dict] = [
 # Install hooks
 # ---------------------------------------------------------------------------
 
+_WORKSPACE_SIDEBAR_ITEMS = [
+	{
+		"child": 0,
+		"collapsible": 1,
+		"icon": "home",
+		"indent": 0,
+		"keep_closed": 0,
+		"label": "Dashboard",
+		"link_to": "Pennylane",
+		"link_type": "Workspace",
+		"show_arrow": 0,
+		"type": "Link",
+	},
+	{
+		"child": 0,
+		"collapsible": 1,
+		"icon": "",
+		"indent": 0,
+		"keep_closed": 0,
+		"label": "Sales",
+		"link_type": "DocType",
+		"show_arrow": 0,
+		"type": "Section Break",
+	},
+	{
+		"child": 1,
+		"collapsible": 1,
+		"icon": "money-coins-1",
+		"indent": 0,
+		"keep_closed": 0,
+		"label": "Invoices",
+		"link_to": "Pennylane Customer Invoice",
+		"link_type": "DocType",
+		"show_arrow": 0,
+		"type": "Link",
+	},
+	{
+		"child": 1,
+		"collapsible": 1,
+		"icon": "notebook-pen",
+		"indent": 0,
+		"keep_closed": 0,
+		"label": "Quotes",
+		"link_to": "Pennylane Customer Quote",
+		"link_type": "DocType",
+		"show_arrow": 0,
+		"type": "Link",
+	},
+	{
+		"child": 1,
+		"collapsible": 1,
+		"icon": "stock",
+		"indent": 0,
+		"keep_closed": 0,
+		"label": "Products",
+		"link_to": "Pennylane Product",
+		"link_type": "DocType",
+		"show_arrow": 0,
+		"type": "Link",
+	},
+	{
+		"child": 1,
+		"collapsible": 1,
+		"icon": "users",
+		"indent": 0,
+		"keep_closed": 0,
+		"label": "Customers",
+		"link_to": "Pennylane Customer",
+		"link_type": "DocType",
+		"show_arrow": 0,
+		"type": "Link",
+	},
+	{
+		"child": 0,
+		"collapsible": 1,
+		"indent": 0,
+		"keep_closed": 1,
+		"label": "Advanced",
+		"link_type": "DocType",
+		"show_arrow": 0,
+		"type": "Section Break",
+	},
+	{
+		"child": 1,
+		"collapsible": 1,
+		"icon": "cog",
+		"indent": 0,
+		"keep_closed": 0,
+		"label": "Settings",
+		"link_to": "Pennylane Settings",
+		"link_type": "DocType",
+		"show_arrow": 0,
+		"type": "Link",
+	},
+	{
+		"child": 1,
+		"collapsible": 1,
+		"icon": "clock-fading",
+		"indent": 0,
+		"keep_closed": 0,
+		"label": "Sync Queue",
+		"link_to": "Pennylane Sync Queue",
+		"link_type": "DocType",
+		"show_arrow": 0,
+		"type": "Link",
+	},
+	{
+		"child": 1,
+		"collapsible": 1,
+		"icon": "logs",
+		"indent": 0,
+		"keep_closed": 0,
+		"label": "Sync Logs",
+		"link_to": "Pennylane Sync Log",
+		"link_type": "DocType",
+		"show_arrow": 0,
+		"type": "Link",
+	},
+]
+
+
 def before_install():
-	"""Remove stale Desktop Icon left over from a previous installation."""
+	"""Remove stale Workspace Sidebar and Desktop Icon left over from a previous installation."""
+	if frappe.db.exists("Workspace Sidebar", "Pennylane"):
+		frappe.delete_doc("Workspace Sidebar", "Pennylane", ignore_permissions=True, force=True)
 	if frappe.db.exists("Desktop Icon", "Pennylane"):
-		frappe.db.delete("Desktop Icon", {"name": "Pennylane"})
+		frappe.delete_doc("Desktop Icon", "Pennylane", ignore_permissions=True, force=True)
 
 
 def after_install():
@@ -280,8 +403,15 @@ def after_install():
 	_seed_vat_rates()
 	_seed_units()
 	_ensure_webhook_secret()
+	_setup_workspace_sidebar()
 	frappe.db.commit()
 	print("Pennylane: app installed successfully.")
+
+
+def after_migrate():
+	_setup_workspace_sidebar()
+	frappe.db.commit()
+	print("Pennylane: workspace sidebar synced.")
 
 
 def _ensure_pennylane_manager_role():
@@ -325,3 +455,25 @@ def _ensure_webhook_secret():
 	if not settings.webhook_secret:
 		settings.webhook_secret = secrets.token_hex(32)
 		settings.save(ignore_permissions=True)
+
+
+def _setup_workspace_sidebar():
+	"""Create or overwrite the Pennylane Workspace Sidebar."""
+	if frappe.db.exists("Workspace Sidebar", "Pennylane"):
+		doc = frappe.get_doc("Workspace Sidebar", "Pennylane")
+		doc.items = []
+	else:
+		doc = frappe.new_doc("Workspace Sidebar")
+		doc.name = "Pennylane"
+		doc.title = "Pennylane"
+		doc.app = "pennylane"
+		doc.module = "Pennylane"
+		doc.standard = 0
+
+	for item in _WORKSPACE_SIDEBAR_ITEMS:
+		doc.append("items", item)
+
+	doc.save(ignore_permissions=True)
+	print("Pennylane: workspace sidebar configured.")
+
+
