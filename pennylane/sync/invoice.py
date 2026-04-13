@@ -7,6 +7,7 @@ from pennylane.utils.pdf import attach_pdf
 from pennylane.client.base import PennylaneClient
 from pennylane.client.invoices import (
 	create_invoice,
+	create_invoice_from_quote,
 	get_changelog,
 	get_invoice,
 	get_invoice_lines,
@@ -75,14 +76,33 @@ def push_invoice(doc_name: str, finalized: bool = False):
 	_ensure_customer(doc.customer)
 
 	client = PennylaneClient.from_settings()
-	payload = to_pennylane(doc_name, finalized=finalized)
 	existing_id = doc.pennylane_id
 
 	try:
 		if existing_id:
+			payload = to_pennylane(doc_name, finalized=finalized)
 			resp = update_invoice(client, existing_id, payload)
 			operation = "update"
+		elif doc.source_quote:
+			# Invoice originates from a quote — use the dedicated endpoint so
+			# Pennylane inherits customer and lines from the quote automatically.
+			pl_quote_id = frappe.db.get_value(
+				"Pennylane Customer Quote", doc.source_quote, "pennylane_id"
+			)
+			if not pl_quote_id:
+				# Quote not yet synced — push it first, then retry
+				from pennylane.sync.quote import push_quote as _push_quote
+				_push_quote(doc.source_quote)
+				pl_quote_id = frappe.db.get_value(
+					"Pennylane Customer Quote", doc.source_quote, "pennylane_id"
+				)
+			payload = {"quote_id": int(pl_quote_id), "draft": not finalized}
+			if doc.external_reference:
+				payload["external_reference"] = doc.external_reference
+			resp = create_invoice_from_quote(client, payload)
+			operation = "create_from_quote"
 		else:
+			payload = to_pennylane(doc_name, finalized=finalized)
 			resp = create_invoice(client, payload)
 			operation = "create"
 
@@ -108,7 +128,9 @@ def push_invoice(doc_name: str, finalized: bool = False):
 			direction="push", resource_type="customer_invoice",
 			operation="create" if not existing_id else "update",
 			status="Failed", frappe_doctype="Pennylane Customer Invoice",
-			frappe_docname=doc_name, request_payload=payload, error_message=str(exc),
+			frappe_docname=doc_name,
+			request_payload=locals().get("payload"),
+			error_message=str(exc),
 			http_status_code=getattr(exc, "status_code", None),
 		)
 		frappe.log_error(str(exc), f"Pennylane push_invoice: {doc_name}")

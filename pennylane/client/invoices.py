@@ -11,6 +11,11 @@ def create_invoice(client: PennylaneClient, payload: dict) -> dict:
 	return client.post("/customer_invoices", data=payload)
 
 
+def create_invoice_from_quote(client: PennylaneClient, payload: dict) -> dict:
+	"""Create an invoice from an existing Pennylane quote (inherits customer and lines)."""
+	return client.post("/customer_invoices/create_from_quote", data=payload)
+
+
 def update_invoice(client: PennylaneClient, pennylane_id: int, payload: dict) -> dict:
 	return client.put(f"/customer_invoices/{pennylane_id}", data=payload)
 
