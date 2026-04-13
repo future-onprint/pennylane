@@ -264,3 +264,5 @@ Shortcuts,Raccourcis
 "Import From Date","Date de début d'importation"
 "Only import invoices created on or after this date. Leave empty to import all. Date filtering is only supported for invoices — quotes, customers and products will always be fully imported.","N'importer que les factures créées à partir de cette date. Laisser vide pour tout importer. Le filtrage par date n'est disponible que pour les factures — les devis, clients et produits seront toujours importés en totalité."
 "Cleanup queued — the list will refresh shortly.","Nettoyage en cours — la liste va se rafraîchir dans quelques instants."
+"Open in Pennylane","Ouvrir dans Pennylane"
+"Company ID not configured in Pennylane Settings.","ID entreprise non configuré dans les Paramètres Pennylane."

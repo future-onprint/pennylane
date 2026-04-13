@@ -8,6 +8,21 @@ frappe.ui.form.on("Pennylane Customer Invoice", {
 		} else {
 			frm.add_custom_button(__("Sync"), () => pennylane_sync_now(frm));
 		}
+
+		if (frm.doc.pennylane_id) {
+			frm.add_custom_button(__("Open in Pennylane"), () => {
+				frappe.db.get_single_value("Pennylane Settings", "company_id").then(company_id => {
+					if (!company_id) {
+						frappe.throw(__("Company ID not configured in Pennylane Settings."));
+						return;
+					}
+					window.open(
+						`https://app.pennylane.com/companies/${company_id}/clients/customer_invoices?invoice_id=${frm.doc.pennylane_id}`,
+						"_blank"
+					);
+				});
+			});
+		}
 	},
 });
 
