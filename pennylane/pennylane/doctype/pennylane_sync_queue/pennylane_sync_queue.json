@@ -24,7 +24,8 @@
    "in_list_view": 1,
    "label": "Resource Type",
    "options": "customer\ncustomer_invoice\ncustomer_quote\nproduct",
-   "reqd": 1
+   "reqd": 1,
+   "search_index": 1
   },
   {
    "fieldname": "operation",
@@ -41,7 +42,8 @@
    "in_list_view": 1,
    "label": "Status",
    "options": "Pending\nProcessing\nFailed\nAbandoned",
-   "reqd": 1
+   "reqd": 1,
+   "search_index": 1
   },
   {
    "fieldname": "col_break_1",
@@ -57,7 +59,8 @@
    "fieldname": "frappe_docname",
    "fieldtype": "Data",
    "label": "Frappe Document",
-   "reqd": 1
+   "reqd": 1,
+   "search_index": 1
   },
   {
    "fieldname": "pennylane_id",
@@ -73,7 +76,8 @@
   {
    "fieldname": "next_retry_at",
    "fieldtype": "Datetime",
-   "label": "Next Retry At"
+   "label": "Next Retry At",
+   "search_index": 1
   },
   {
    "collapsible": 1,
