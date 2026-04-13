@@ -48,6 +48,9 @@ class PennylaneSettings(Document):
 			self.base_url = "https://app.pennylane.com/api/external/v2"
 		self.base_url = self.base_url.rstrip("/")
 
+		if self.is_enabled and not self.api_token:
+			frappe.throw(frappe._("API Token is required to enable the Pennylane integration."))
+
 		if self.is_enabled and not self.company_id:
 			frappe.msgprint(
 				frappe._("Company ID is missing. Run <b>Test Connection</b> to populate it automatically."),
