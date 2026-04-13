@@ -15,26 +15,26 @@ import frappe
 @frappe.whitelist(allow_guest=True)
 def handle_webhook():
 	"""Receive and dispatch Pennylane webhook events."""
-	enable_webhooks = frappe.db.get_single_value("Pennylane Settings", "enable_webhooks")
-	if not enable_webhooks:
-		frappe.response.http_status_code = 404
-		return {"status": "error", "message": "Webhooks are disabled"}
-
-	# Read raw body and signature
+	# Always verify HMAC first — do not leak whether webhooks are enabled or not
 	raw_body: bytes = frappe.request.data
 	signature = frappe.get_request_header("X-Pennylane-Signature") or ""
 
-	# Verify HMAC-SHA256 signature
 	secret = frappe.db.get_single_value("Pennylane Settings", "webhook_secret")
 	if not secret:
-		frappe.throw("Webhook secret not configured", frappe.AuthenticationError)
+		frappe.response.http_status_code = 401
+		return {"status": "unauthorized"}
 
 	secret_bytes = secret.encode("utf-8") if isinstance(secret, str) else secret
 	expected = hmac.new(secret_bytes, raw_body, hashlib.sha256).hexdigest()
 
 	if not hmac.compare_digest(expected, signature):
 		frappe.response.http_status_code = 401
-		return {"status": "unauthorized", "message": "Invalid signature"}
+		return {"status": "unauthorized"}
+
+	# Signature valid — now check if webhooks are enabled
+	enable_webhooks = frappe.db.get_single_value("Pennylane Settings", "enable_webhooks")
+	if not enable_webhooks:
+		return {"status": "ok"}
 
 	# Parse body
 	try:
@@ -49,6 +49,13 @@ def handle_webhook():
 	if not event_type:
 		frappe.response.http_status_code = 400
 		return {"status": "error", "message": "Missing event_type"}
+
+	# Deduplication: skip events we've already processed within the last 60 seconds
+	# to handle Pennylane's at-least-once delivery guarantee
+	dedup_key = f"pennylane_webhook:{event_type}:{resource_id}"
+	if frappe.cache().get(dedup_key):
+		return {"status": "ok"}
+	frappe.cache().set(dedup_key, "1", ex=60)
 
 	# Dispatch to appropriate sync job
 	_dispatch(event_type, resource_id)
