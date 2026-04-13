@@ -1,0 +1,323 @@
+"""Pennylane Customer Quote sync — push on save/submit, pull via changelog.
+
+A quote is editable while its status is `pending`. Once Pennylane moves it to
+`accepted`, `denied`, `invoiced`, or `expired` the Frappe doc is automatically
+submitted (read-only). A quote can be linked to one or many invoices via the
+`linked_invoices` relationship on the Pennylane side.
+"""
+
+import frappe
+import frappe.utils
+
+from pennylane.client.base import PennylaneClient
+from pennylane.utils.pdf import attach_pdf
+from pennylane.client.quotes import (
+	create_quote,
+	get_changelog,
+	get_quote,
+	get_quote_lines,
+	list_quotes,
+	update_quote,
+)
+from pennylane.mappers.quote import from_pennylane, to_pennylane
+from pennylane.mappers import parse_pennylane_dt
+from pennylane.sync.utils import enqueue_sync, is_integration_enabled, notify_full_sync_complete, set_creation, write_log
+
+_SYNC_FLAG = "pennylane_sync_source"
+
+
+# ------------------------------------------------------------------
+# Doc events
+# ------------------------------------------------------------------
+
+
+def on_quote_save(doc, method=None):
+	"""Fired on after_insert / on_update."""
+	if getattr(doc.flags, _SYNC_FLAG, None) == "pennylane":
+		return
+	if not is_integration_enabled():
+		return
+	settings = frappe.get_cached_doc("Pennylane Settings")
+	if not settings.sync_quotes:
+		return
+	enqueue_sync("customer_quote", "Pennylane Customer Quote", doc.name, operation="update")
+
+
+# ------------------------------------------------------------------
+# Push
+# ------------------------------------------------------------------
+
+
+def push_quote(doc_name: str):
+	doc = frappe.get_doc("Pennylane Customer Quote", doc_name)
+
+	_ensure_customer(doc.customer)
+
+	client = PennylaneClient.from_settings()
+	payload = to_pennylane(doc_name)
+	existing_id = doc.pennylane_id
+
+	try:
+		if existing_id:
+			resp = update_quote(client, existing_id, payload)
+			operation = "update"
+		else:
+			resp = create_quote(client, payload)
+			operation = "create"
+
+		frappe.db.set_value("Pennylane Customer Quote", doc_name, {
+			"pennylane_id": resp.get("id"),
+			"quote_number": resp.get("quote_number"),
+			"status": resp.get("status", "pending"),
+			"amount": resp.get("amount"),
+			"currency_amount": resp.get("currency_amount"),
+			"sync_status": "Synced",
+			"last_synced_at": frappe.utils.now_datetime(),
+		})
+		write_log(
+			direction="push", resource_type="customer_quote", operation=operation,
+			status="Success", frappe_doctype="Pennylane Customer Quote",
+			frappe_docname=doc_name, pennylane_id=resp.get("id"),
+			request_payload=payload, response_payload=resp,
+		)
+
+	except Exception as exc:
+		frappe.db.set_value("Pennylane Customer Quote", doc_name, "sync_status", "Failed")
+		write_log(
+			direction="push", resource_type="customer_quote",
+			operation="create" if not existing_id else "update",
+			status="Failed", frappe_doctype="Pennylane Customer Quote",
+			frappe_docname=doc_name, request_payload=payload, error_message=str(exc),
+			http_status_code=getattr(exc, "status_code", None),
+		)
+		frappe.log_error(str(exc), f"Pennylane push_quote: {doc_name}")
+		raise
+
+
+# ------------------------------------------------------------------
+# Pull
+# ------------------------------------------------------------------
+
+
+def pull_quotes():
+	if not is_integration_enabled():
+		return
+
+	settings = frappe.get_cached_doc("Pennylane Settings")
+	if not settings.sync_quotes:
+		return
+
+	client = PennylaneClient.from_settings()
+	cursor = settings.quote_changelog_cursor or None
+	start_date = f"{settings.sync_from_date}T00:00:00Z" if (not cursor and settings.sync_from_date) else None
+
+	try:
+		resp = get_changelog(client, cursor=cursor, start_date=start_date)
+	except Exception as exc:
+		if "cursor" in str(exc).lower():
+			frappe.log_error(str(exc), "Pennylane pull_quotes: invalid cursor — resetting")
+			frappe.db.set_value("Pennylane Settings", "Pennylane Settings", "quote_changelog_cursor", None)
+			frappe.db.commit()
+			return  # Let next scheduled run start fresh
+		else:
+			raise
+
+	items = resp.get("items", [])
+
+	for change in items:
+		try:
+			pl_id = change["id"]
+			op = change["operation"]
+			if op == "delete":
+				_handle_delete(pl_id)
+				continue
+			_upsert(get_quote(client, pl_id), client)
+		except Exception as exc:
+			write_log(
+				direction="pull", resource_type="customer_quote",
+				operation=change.get("operation", "unknown"), status="Failed",
+				pennylane_id=change.get("id"), error_message=str(exc),
+			)
+			frappe.log_error(str(exc), f"Pennylane pull_quotes id={change.get('id')}")
+
+	next_cursor = resp.get("next_cursor") or cursor
+	frappe.db.set_value(
+		"Pennylane Settings", "Pennylane Settings", "quote_changelog_cursor", next_cursor
+	)
+	frappe.db.commit()
+
+
+def full_sync_quotes():
+	"""Pull all quotes from the list endpoint (force full sync)."""
+	if not is_integration_enabled():
+		return
+
+	lock_key = "pennylane_full_sync_quotes"
+	if not frappe.cache().set(lock_key, "1", nx=True, ex=3600):
+		frappe.log_error("Full sync already running — skipping.", "Pennylane full_sync_quotes")
+		return
+
+	client = PennylaneClient.from_settings()
+	ok = errors = 0
+	try:
+		for pl_quote in list_quotes(client):
+			try:
+				_upsert(get_quote(client, pl_quote["id"]), client, write_sync_log=False)
+				ok += 1
+			except Exception as exc:
+				errors += 1
+				frappe.log_error(str(exc), f"Pennylane full_sync_quotes id={pl_quote.get('id')}")
+			finally:
+				frappe.db.commit()
+		frappe.db.set_value(
+			"Pennylane Settings", "Pennylane Settings", "quote_changelog_cursor", None
+		)
+		write_log(
+			direction="pull", resource_type="customer_quote", operation="full_sync",
+			status="Success" if not errors else "Failed",
+			error_message=f"{ok} imported, {errors} errors" if errors else f"{ok} imported",
+		)
+		notify_full_sync_complete("customer_quote", ok, errors)
+		frappe.db.commit()
+	finally:
+		frappe.cache().delete(lock_key)
+
+
+def _upsert(pl_data: dict, client: PennylaneClient, write_sync_log: bool = True):
+	pl_id = pl_data.get("id")
+
+	pl_customer = pl_data.get("customer") or {}
+	if pl_customer.get("id"):
+		_ensure_customer_from_pl(pl_customer["id"], client)
+
+	# invoice_lines in the GET response is a URL reference — fetch lines separately
+	pl_data = dict(pl_data)
+	pl_data["invoice_lines"] = get_quote_lines(client, pl_id)
+
+	fields = from_pennylane(pl_data)
+	fields.pop("_locked", None)  # no longer used — DocType is non-submittable
+
+	doc_name = frappe.db.get_value("Pennylane Customer Quote", {"pennylane_id": pl_id}, "name")
+	sync_meta = {"sync_status": "Synced", "last_synced_at": frappe.utils.now_datetime()}
+	pl_created_at = parse_pennylane_dt(pl_data.get("created_at"))
+
+	if doc_name:
+		doc = frappe.get_doc("Pennylane Customer Quote", doc_name)
+		doc.flags[_SYNC_FLAG] = "pennylane"
+		doc.update({k: v for k, v in fields.items() if k != "invoice_lines"})
+		doc.set("invoice_lines", fields.get("invoice_lines", []))
+		doc.update(sync_meta)
+		doc.save(ignore_permissions=True)
+
+		if pl_created_at:
+			set_creation("Pennylane Customer Quote", doc_name, pl_created_at)
+		_try_attach_pdf(doc, pl_data)
+		if write_sync_log:
+			write_log(
+				direction="pull", resource_type="customer_quote", operation="update",
+				status="Success", frappe_doctype="Pennylane Customer Quote",
+				frappe_docname=doc_name, pennylane_id=pl_id,
+				response_payload=pl_data,
+			)
+	else:
+		doc = frappe.new_doc("Pennylane Customer Quote")
+		doc.flags[_SYNC_FLAG] = "pennylane"
+		doc.update({k: v for k, v in fields.items() if k != "invoice_lines"})
+		doc.set("invoice_lines", fields.get("invoice_lines", []))
+		doc.update(sync_meta)
+		doc.insert(ignore_permissions=True)
+
+		if pl_created_at:
+			set_creation("Pennylane Customer Quote", doc.name, pl_created_at)
+
+		_try_attach_pdf(doc, pl_data)
+		if write_sync_log:
+			write_log(
+				direction="pull", resource_type="customer_quote", operation="create",
+				status="Success", frappe_doctype="Pennylane Customer Quote",
+				frappe_docname=doc.name, pennylane_id=pl_id,
+				response_payload=pl_data,
+			)
+
+
+def _handle_delete(pl_id: int):
+	doc_name = frappe.db.get_value("Pennylane Customer Quote", {"pennylane_id": pl_id}, "name")
+	if doc_name:
+		frappe.db.set_value("Pennylane Customer Quote", doc_name, "sync_status", "Deleted")
+	write_log(
+		direction="pull", resource_type="customer_quote", operation="delete",
+		status="Success", pennylane_id=pl_id,
+	)
+
+
+# ------------------------------------------------------------------
+# Dependency helpers
+# ------------------------------------------------------------------
+
+
+def _ensure_customer(frappe_customer_name: str):
+	pl_id = frappe.db.get_value("Pennylane Customer", frappe_customer_name, "pennylane_id")
+	if not pl_id:
+		from pennylane.sync.customer import push_customer
+		push_customer(frappe_customer_name)
+
+
+def _ensure_customer_from_pl(pl_customer_id: int, client: PennylaneClient):
+	if not frappe.db.exists("Pennylane Customer", {"pennylane_id": pl_customer_id}):
+		from pennylane.client.customers import get_customer
+		from pennylane.client.exceptions import PennylaneNotFoundError
+		from pennylane.sync.customer import _upsert as upsert_customer
+		try:
+			upsert_customer(get_customer(client, pl_customer_id), client)
+		except PennylaneNotFoundError:
+			frappe.log_error(
+				f"Customer {pl_customer_id} not found in Pennylane — skipping auto-create.",
+				"Pennylane _ensure_customer_from_pl",
+			)
+
+
+def _try_attach_pdf(doc, pl_data: dict) -> None:
+	"""Attempt to attach the PDF from Pennylane; swallow errors to not break sync."""
+	public_file_url = pl_data.get("public_file_url")
+	filename = pl_data.get("filename")
+	if not public_file_url or not filename:
+		return
+	try:
+		attach_pdf(doc, public_file_url, filename, replace=True)
+	except Exception as exc:
+		frappe.log_error(str(exc), f"Pennylane attach_pdf quote: {doc.name}")
+
+
+def pull_single(pl_id: int) -> None:
+	"""Pull a single quote from Pennylane by its Pennylane ID (manual sync)."""
+	if not is_integration_enabled():
+		return
+	client = PennylaneClient.from_settings()
+	try:
+		_upsert(get_quote(client, pl_id), client)
+	except Exception as exc:
+		write_log(
+			direction="pull", resource_type="customer_quote",
+			operation="sync", status="Failed",
+			pennylane_id=pl_id, error_message=str(exc),
+		)
+		frappe.log_error(str(exc), f"Pennylane pull_single quote id={pl_id}")
+		raise
+
+
+def _sync_single_from_webhook(pl_id: int) -> None:
+	"""Sync a single quote triggered by a webhook event."""
+	if not is_integration_enabled():
+		return
+	client = PennylaneClient.from_settings()
+	try:
+		pl_data = get_quote(client, pl_id)
+		_upsert(pl_data, client)
+	except Exception as exc:
+		write_log(
+			direction="pull", resource_type="customer_quote",
+			operation="webhook", status="Failed",
+			pennylane_id=pl_id, error_message=str(exc),
+		)
+		frappe.log_error(str(exc), f"Pennylane webhook quote id={pl_id}")
+		raise

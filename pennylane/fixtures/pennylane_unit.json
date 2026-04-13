@@ -1,0 +1,13 @@
+[
+ {"doctype": "Pennylane Unit", "name": "piece",    "code": "piece",    "label": "Unité",         "symbol": "unité"},
+ {"doctype": "Pennylane Unit", "name": "hour",     "code": "hour",     "label": "Heure",          "symbol": "heure"},
+ {"doctype": "Pennylane Unit", "name": "day",      "code": "day",      "label": "Jour",            "symbol": "jour"},
+ {"doctype": "Pennylane Unit", "name": "month",    "code": "month",    "label": "Mois",            "symbol": "mois"},
+ {"doctype": "Pennylane Unit", "name": "kilogram", "code": "kilogram", "label": "Kilogramme",      "symbol": "kg"},
+ {"doctype": "Pennylane Unit", "name": "m2",       "code": "m2",       "label": "Mètre carré",     "symbol": "m²"},
+ {"doctype": "Pennylane Unit", "name": "m3",       "code": "m3",       "label": "Mètre cube",      "symbol": "m³"},
+ {"doctype": "Pennylane Unit", "name": "ton",      "code": "ton",      "label": "Tonne",           "symbol": "tonne"},
+ {"doctype": "Pennylane Unit", "name": "mg",       "code": "mg",       "label": "Milligramme",     "symbol": "mg"},
+ {"doctype": "Pennylane Unit", "name": "percent",  "code": "percent",  "label": "Pourcentage",     "symbol": "%"},
+ {"doctype": "Pennylane Unit", "name": "no_unit",  "code": "no_unit",  "label": "Sans unité",      "symbol": "(pas d'unité)"}
+]

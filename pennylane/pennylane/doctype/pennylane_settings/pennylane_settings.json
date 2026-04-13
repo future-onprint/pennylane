@@ -1,0 +1,398 @@
+{
+ "actions": [],
+ "creation": "2026-04-08 00:00:00",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "connection_tab",
+  "integration_section",
+  "is_enabled",
+  "api_section",
+  "api_token",
+  "base_url",
+  "status_section",
+  "connection_status",
+  "column_break_status",
+  "last_connection_test",
+  "company_id",
+  "sync_tab",
+  "sync_resources_section",
+  "sync_customers",
+  "sync_invoices",
+  "column_break_sync",
+  "sync_quotes",
+  "sync_products",
+  "sync_from_date_section",
+  "sync_from_date",
+  "notifications_section",
+  "notify_on_failure",
+  "webhooks_tab",
+  "webhook_enable_section",
+  "enable_webhooks",
+  "webhook_events_section",
+  "webhook_event_invoice_created",
+  "webhook_event_quote_created",
+  "webhook_event_dms_file_created",
+  "webhook_status_section",
+  "webhook_subscription_id",
+  "column_break_webhook_status",
+  "webhook_registered_at",
+  "webhook_secret",
+  "webhook_url",
+  "advanced_tab",
+  "force_sync_section",
+  "force_sync_customers",
+  "force_sync_invoices",
+  "column_break_force_sync",
+  "force_sync_quotes",
+  "force_sync_products",
+  "log_retention_section",
+  "log_retention_days",
+  "cursor_section",
+  "customer_changelog_cursor",
+  "invoice_changelog_cursor",
+  "column_break_cursors",
+  "quote_changelog_cursor",
+  "product_changelog_cursor"
+ ],
+ "fields": [
+  {
+   "fieldname": "connection_tab",
+   "fieldtype": "Tab Break",
+   "label": "Connection"
+  },
+  {
+   "fieldname": "integration_section",
+   "fieldtype": "Section Break",
+   "label": "Integration"
+  },
+  {
+   "default": "0",
+   "description": "Enables the synchronisation between Frappe and Pennylane. When disabled, all scheduled syncs and webhook processing are paused.",
+   "fieldname": "is_enabled",
+   "fieldtype": "Check",
+   "label": "Enable Pennylane Integration"
+  },
+  {
+   "fieldname": "api_section",
+   "fieldtype": "Section Break",
+   "label": "API"
+  },
+  {
+   "description": "Your Pennylane API key. Find it in Pennylane \u2192 Settings \u2192 API Keys.",
+   "fieldname": "api_token",
+   "fieldtype": "Password",
+   "label": "API Token",
+   "reqd": 1
+  },
+  {
+   "default": "https://app.pennylane.com/api/external/v2",
+   "description": "Pennylane API base URL. Do not change unless instructed by Pennylane support.",
+   "fieldname": "base_url",
+   "fieldtype": "Data",
+   "label": "API Base URL"
+  },
+  {
+   "fieldname": "status_section",
+   "fieldtype": "Section Break",
+   "label": "Connection Status"
+  },
+  {
+   "fieldname": "connection_status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "\nConnected\nFailed\nNot Tested",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_status",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "last_connection_test",
+   "fieldtype": "Datetime",
+   "label": "Last Tested",
+   "read_only": 1
+  },
+  {
+   "description": "Your Pennylane company identifier. Retrieved automatically when the connection test succeeds.",
+   "fieldname": "company_id",
+   "fieldtype": "Data",
+   "label": "Company ID",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sync_tab",
+   "fieldtype": "Tab Break",
+   "label": "Synchronisation"
+  },
+  {
+   "description": "Select which Pennylane resources should be pulled into Frappe automatically.",
+   "fieldname": "sync_resources_section",
+   "fieldtype": "Section Break",
+   "label": "Resources to Synchronise"
+  },
+  {
+   "default": "1",
+   "description": "Pull customers from Pennylane and create or update Customer records in Frappe.",
+   "fieldname": "sync_customers",
+   "fieldtype": "Check",
+   "label": "Customers"
+  },
+  {
+   "default": "1",
+   "description": "Pull customer invoices from Pennylane and create or update Sales Invoices in Frappe.",
+   "fieldname": "sync_invoices",
+   "fieldtype": "Check",
+   "label": "Customer Invoices"
+  },
+  {
+   "fieldname": "column_break_sync",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "1",
+   "description": "Pull quotes from Pennylane and create or update Quotations in Frappe.",
+   "fieldname": "sync_quotes",
+   "fieldtype": "Check",
+   "label": "Quotes"
+  },
+  {
+   "default": "1",
+   "description": "Pull products and services from Pennylane and create or update Items in Frappe.",
+   "fieldname": "sync_products",
+   "fieldtype": "Check",
+   "label": "Products"
+  },
+  {
+   "description": "Only import data created on or after this date. Used by Force Full Re-sync and by the \"Position Cursors\" button to fast-forward the hourly sync starting point.",
+   "fieldname": "sync_from_date_section",
+   "fieldtype": "Section Break",
+   "label": "Sync Start Date"
+  },
+  {
+   "fieldname": "notifications_section",
+   "fieldtype": "Section Break",
+   "label": "Notifications"
+  },
+  {
+   "default": "1",
+   "description": "Send an in-app alert to System Managers when a sync job fails repeatedly after automatic retries.",
+   "fieldname": "notify_on_failure",
+   "fieldtype": "Check",
+   "label": "Notify on Sync Failure"
+  },
+  {
+   "fieldname": "webhooks_tab",
+   "fieldtype": "Tab Break",
+   "label": "Webhooks"
+  },
+  {
+   "fieldname": "webhook_enable_section",
+   "fieldtype": "Section Break",
+   "label": "Webhook Reception"
+  },
+  {
+   "default": "0",
+   "description": "When enabled, the app automatically registers a webhook subscription with Pennylane so that events (invoice created, quote created\u2026) trigger an immediate sync instead of waiting for the next scheduled pull. Requires the site to be accessible via HTTPS.",
+   "fieldname": "enable_webhooks",
+   "fieldtype": "Check",
+   "label": "Enable Webhook Reception"
+  },
+  {
+   "depends_on": "doc.enable_webhooks",
+   "description": "Select the Pennylane events this app should react to in real time.",
+   "fieldname": "webhook_events_section",
+   "fieldtype": "Section Break",
+   "label": "Subscribed Events"
+  },
+  {
+   "default": "1",
+   "depends_on": "doc.enable_webhooks",
+   "description": "Trigger an immediate sync when a customer invoice is created in Pennylane.",
+   "fieldname": "webhook_event_invoice_created",
+   "fieldtype": "Check",
+   "label": "Customer Invoice Created"
+  },
+  {
+   "default": "1",
+   "depends_on": "doc.enable_webhooks",
+   "description": "Trigger an immediate sync when a quote is created in Pennylane.",
+   "fieldname": "webhook_event_quote_created",
+   "fieldtype": "Check",
+   "label": "Quote Created"
+  },
+  {
+   "default": "0",
+   "depends_on": "doc.enable_webhooks",
+   "description": "Receive a notification when a DMS file is created in Pennylane (no automatic sync action).",
+   "fieldname": "webhook_event_dms_file_created",
+   "fieldtype": "Check",
+   "label": "DMS File Created"
+  },
+  {
+   "depends_on": "doc.enable_webhooks",
+   "fieldname": "webhook_status_section",
+   "fieldtype": "Section Break",
+   "label": "Subscription Status"
+  },
+  {
+   "description": "Pennylane subscription ID. Set automatically when the webhook is registered.",
+   "fieldname": "webhook_subscription_id",
+   "fieldtype": "Data",
+   "label": "Subscription ID",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_webhook_status",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "webhook_registered_at",
+   "fieldtype": "Datetime",
+   "label": "Registered At",
+   "read_only": 1
+  },
+  {
+   "depends_on": "doc.enable_webhooks",
+   "description": "Signing secret provided by Pennylane when the subscription was created. Used to verify the authenticity of incoming webhook requests.",
+   "fieldname": "webhook_secret",
+   "fieldtype": "Password",
+   "label": "Webhook Secret",
+   "read_only": 1
+  },
+  {
+   "depends_on": "doc.enable_webhooks",
+   "description": "HTTPS endpoint registered with Pennylane as the webhook destination.",
+   "fieldname": "webhook_url",
+   "fieldtype": "Data",
+   "label": "Endpoint URL",
+   "read_only": 1
+  },
+  {
+   "fieldname": "advanced_tab",
+   "fieldtype": "Tab Break",
+   "label": "Advanced"
+  },
+  {
+   "description": "Clears the sync cursors for the selected resources and re-imports all matching records from Pennylane from scratch. Use with caution \u2014 this operation runs in the background and may take several minutes. Select the resources below then click Run Full Sync in the Actions menu.",
+   "fieldname": "force_sync_section",
+   "fieldtype": "Section Break",
+   "label": "Force Full Re-sync"
+  },
+  {
+   "description": "Leave empty to import everything. Used by Force Full Re-sync (date filter only applies to invoices) and by \"Position Cursors\" to fast-forward all changelogs to this date.",
+   "fieldname": "sync_from_date",
+   "fieldtype": "Date",
+   "label": "Start Date"
+  },
+  {
+   "default": "0",
+   "fieldname": "force_sync_customers",
+   "fieldtype": "Check",
+   "label": "Customers"
+  },
+  {
+   "default": "0",
+   "fieldname": "force_sync_invoices",
+   "fieldtype": "Check",
+   "label": "Customer Invoices"
+  },
+  {
+   "fieldname": "column_break_force_sync",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "force_sync_quotes",
+   "fieldtype": "Check",
+   "label": "Quotes"
+  },
+  {
+   "default": "0",
+   "fieldname": "force_sync_products",
+   "fieldtype": "Check",
+   "label": "Products"
+  },
+  {
+   "fieldname": "log_retention_section",
+   "fieldtype": "Section Break",
+   "label": "Log Retention"
+  },
+  {
+   "default": "30",
+   "description": "Sync logs older than this number of days are automatically deleted by the daily cleanup task. Set to 0 to disable automatic cleanup.",
+   "fieldname": "log_retention_days",
+   "fieldtype": "Int",
+   "label": "Log Retention (days)"
+  },
+  {
+   "description": "Read-only cursors that track the last processed position in each Pennylane changelog. They advance automatically with each sync run.",
+   "fieldname": "cursor_section",
+   "fieldtype": "Section Break",
+   "label": "Sync Cursors"
+  },
+  {
+   "fieldname": "customer_changelog_cursor",
+   "fieldtype": "Data",
+   "label": "Customers",
+   "read_only": 1
+  },
+  {
+   "fieldname": "invoice_changelog_cursor",
+   "fieldtype": "Data",
+   "label": "Customer Invoices",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_cursors",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "quote_changelog_cursor",
+   "fieldtype": "Data",
+   "label": "Quotes",
+   "read_only": 1
+  },
+  {
+   "fieldname": "product_changelog_cursor",
+   "fieldtype": "Data",
+   "label": "Products",
+   "read_only": 1
+  }
+ ],
+ "issingle": 1,
+ "links": [],
+ "modified": "2026-04-09 19:04:18.024607",
+ "modified_by": "kylian.mallet@sklav.group",
+ "module": "Pennylane",
+ "name": "Pennylane Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "Pennylane Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -4,6 +4,18 @@ app_publisher = "Underscore Blank OÜ"
 app_description = "Pennylane integration for Frappe ecosystem."
 app_email = "contact@underscore-blank.io"
 app_license = "agpl-3.0"
+app_color = "#006666"
+app_icon = "icon-pennylane"
+
+# Fixtures
+# --------
+# Roles shipped with the app — imported automatically on bench migrate.
+fixtures = [
+	{"dt": "Role", "filters": [["name", "=", "Pennylane Manager"]]},
+	{"dt": "Number Card", "filters": [["module", "=", "Pennylane"]]},
+	{"dt": "Pennylane VAT Rate"},
+	{"dt": "Pennylane Unit"},
+]
 
 # Apps
 # ------------------
@@ -11,15 +23,14 @@ app_license = "agpl-3.0"
 # required_apps = []
 
 # Each item in the list will be shown as an app in the apps page
-# add_to_apps_screen = [
-# 	{
-# 		"name": "pennylane",
-# 		"logo": "/assets/pennylane/logo.png",
-# 		"title": "Pennylane",
-# 		"route": "/pennylane",
-# 		"has_permission": "pennylane.api.permission.has_app_permission"
-# 	}
-# ]
+add_to_apps_screen = [
+	{
+		"name": "pennylane",
+		"logo": "/assets/pennylane/icon.svg",
+		"title": "Pennylane",
+		"route": "/desk/pennylane",
+	}
+]
 
 # Includes in <head>
 # ------------------
@@ -51,7 +62,7 @@ app_license = "agpl-3.0"
 # Svg Icons
 # ------------------
 # include app icons in desk
-# app_include_icons = "pennylane/public/icons.svg"
+# app_include_icons = "/assets/pennylane/icons/pennylane/icons.svg"
 
 # Home Pages
 # ----------
@@ -85,14 +96,14 @@ app_license = "agpl-3.0"
 # Installation
 # ------------
 
-# before_install = "pennylane.install.before_install"
-# after_install = "pennylane.install.after_install"
+before_install = "pennylane.install.before_install"
+after_install = "pennylane.install.after_install"
+after_migrate = "pennylane.install.after_migrate"
 
 # Uninstallation
 # ------------
 
-# before_uninstall = "pennylane.uninstall.before_uninstall"
-# after_uninstall = "pennylane.uninstall.after_uninstall"
+before_uninstall = "pennylane.uninstall.before_uninstall"
 
 # Integration Setup
 # ------------------
@@ -132,34 +143,41 @@ app_license = "agpl-3.0"
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
+doc_events = {
+	"Pennylane Customer": {
+		"after_insert": "pennylane.sync.customer.on_customer_save",
+		"on_update": "pennylane.sync.customer.on_customer_save",
+	},
+	"Pennylane Product": {
+		"after_insert": "pennylane.sync.product.on_product_save",
+		"on_update": "pennylane.sync.product.on_product_save",
+	},
+	"Pennylane Customer Invoice": {
+		"after_insert": "pennylane.sync.invoice.on_invoice_save",
+		"on_update": "pennylane.sync.invoice.on_invoice_save",
+		"on_submit": "pennylane.sync.invoice.on_invoice_submit",
+		"on_cancel": "pennylane.sync.invoice.on_invoice_cancel",
+	},
+	"Pennylane Customer Quote": {
+		"after_insert": "pennylane.sync.quote.on_quote_save",
+		"on_update": "pennylane.sync.quote.on_quote_save",
+	},
+}
 
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-# 	"all": [
-# 		"pennylane.tasks.all"
-# 	],
-# 	"daily": [
-# 		"pennylane.tasks.daily"
-# 	],
-# 	"hourly": [
-# 		"pennylane.tasks.hourly"
-# 	],
-# 	"weekly": [
-# 		"pennylane.tasks.weekly"
-# 	],
-# 	"monthly": [
-# 		"pennylane.tasks.monthly"
-# 	],
-# }
+scheduler_events = {
+	"all": [
+		"pennylane.tasks.process_sync_queue",
+	],
+	"hourly": [
+		"pennylane.tasks.hourly",
+	],
+	"daily": [
+		"pennylane.tasks.daily",
+	],
+}
 
 # Testing
 # -------
@@ -239,7 +257,7 @@ app_license = "agpl-3.0"
 # ]
 
 # Automatically update python controller files with type annotations for this app.
-# export_python_type_annotations = True
+export_python_type_annotations = True
 
 # default_log_clearing_doctypes = {
 # 	"Logging DocType Name": 30  # days to retain logs

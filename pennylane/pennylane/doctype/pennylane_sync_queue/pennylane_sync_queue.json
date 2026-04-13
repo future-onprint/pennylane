@@ -1,0 +1,117 @@
+{
+ "actions": [],
+ "autoname": "hash",
+ "creation": "2026-04-08 00:00:00",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "resource_type",
+  "operation",
+  "status",
+  "col_break_1",
+  "frappe_doctype",
+  "frappe_docname",
+  "pennylane_id",
+  "retry_count",
+  "next_retry_at",
+  "payload_section",
+  "payload"
+ ],
+ "fields": [
+  {
+   "fieldname": "resource_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Resource Type",
+   "options": "customer\ncustomer_invoice\ncustomer_quote\nproduct",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "operation",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Operation",
+   "options": "create\nupdate\ndelete",
+   "reqd": 1
+  },
+  {
+   "default": "Pending",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "Pending\nProcessing\nFailed\nAbandoned",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "col_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "frappe_doctype",
+   "fieldtype": "Data",
+   "label": "Frappe DocType",
+   "reqd": 1
+  },
+  {
+   "fieldname": "frappe_docname",
+   "fieldtype": "Data",
+   "label": "Frappe Document",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "pennylane_id",
+   "fieldtype": "Data",
+   "label": "Pennylane ID"
+  },
+  {
+   "default": "0",
+   "fieldname": "retry_count",
+   "fieldtype": "Int",
+   "label": "Retry Count"
+  },
+  {
+   "fieldname": "next_retry_at",
+   "fieldtype": "Datetime",
+   "label": "Next Retry At",
+   "search_index": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "payload_section",
+   "fieldtype": "Section Break",
+   "label": "Payload"
+  },
+  {
+   "fieldname": "payload",
+   "fieldtype": "Code",
+   "label": "Payload",
+   "options": "JSON"
+  }
+ ],
+ "links": [],
+ "modified": "2026-04-08 16:16:45.351300",
+ "modified_by": "kylian.mallet@sklav.group",
+ "module": "Pennylane",
+ "name": "Pennylane Sync Queue",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "read": 1,
+   "role": "System Manager",
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "Pennylane Manager"
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "creation",
+ "sort_order": "ASC",
+ "states": []
+}

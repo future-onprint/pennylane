@@ -1,0 +1,131 @@
+{
+ "actions": [],
+ "autoname": "hash",
+ "creation": "2026-04-08 00:00:00",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "direction",
+  "resource_type",
+  "operation",
+  "status",
+  "col_break_1",
+  "frappe_doctype",
+  "frappe_docname",
+  "pennylane_id",
+  "http_status_code",
+  "retry_count",
+  "details_section",
+  "request_payload",
+  "response_payload",
+  "error_message"
+ ],
+ "fields": [
+  {
+   "fieldname": "direction",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Direction",
+   "options": "push\npull",
+   "reqd": 1
+  },
+  {
+   "fieldname": "resource_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Resource Type",
+   "options": "customer\ncustomer_invoice\ncustomer_quote\nproduct",
+   "reqd": 1
+  },
+  {
+   "fieldname": "operation",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Operation",
+   "options": "create\nupdate\ndelete\nfull_sync\nwebhook\ncancel\nsync"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "Success\nFailed\nPending",
+   "reqd": 1
+  },
+  {
+   "fieldname": "col_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "frappe_doctype",
+   "fieldtype": "Data",
+   "label": "Frappe DocType"
+  },
+  {
+   "fieldname": "frappe_docname",
+   "fieldtype": "Data",
+   "label": "Frappe Document"
+  },
+  {
+   "fieldname": "pennylane_id",
+   "fieldtype": "Data",
+   "label": "Pennylane ID"
+  },
+  {
+   "fieldname": "http_status_code",
+   "fieldtype": "Int",
+   "label": "HTTP Status Code"
+  },
+  {
+   "default": "0",
+   "fieldname": "retry_count",
+   "fieldtype": "Int",
+   "label": "Retry Count"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "details_section",
+   "fieldtype": "Section Break",
+   "label": "Details"
+  },
+  {
+   "fieldname": "request_payload",
+   "fieldtype": "Code",
+   "label": "Request Payload",
+   "options": "JSON"
+  },
+  {
+   "fieldname": "response_payload",
+   "fieldtype": "Code",
+   "label": "Response Payload",
+   "options": "JSON"
+  },
+  {
+   "fieldname": "error_message",
+   "fieldtype": "Small Text",
+   "label": "Error Message"
+  }
+ ],
+ "in_create": 1,
+ "links": [],
+ "modified": "2026-04-08 16:17:01.386084",
+ "modified_by": "kylian.mallet@sklav.group",
+ "module": "Pennylane",
+ "name": "Pennylane Sync Log",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "read": 1,
+   "role": "System Manager"
+  },
+  {
+   "read": 1,
+   "role": "Pennylane Manager"
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

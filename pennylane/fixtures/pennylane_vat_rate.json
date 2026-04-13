@@ -1,0 +1,1307 @@
+[
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "FR_1_05",
+  "code": "FR_1_05",
+  "label": "TVA 1,05 % — France",
+  "rate": 1.05,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "FR_1_75",
+  "code": "FR_1_75",
+  "label": "TVA 1,75 % — France",
+  "rate": 1.75,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "FR_09",
+  "code": "FR_09",
+  "label": "TVA 0,9 % — France",
+  "rate": 0.9,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "FR_21",
+  "code": "FR_21",
+  "label": "TVA 2,1 % — France",
+  "rate": 2.1,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "FR_40",
+  "code": "FR_40",
+  "label": "TVA 4 % — France",
+  "rate": 4.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "FR_50",
+  "code": "FR_50",
+  "label": "TVA 5 % — France",
+  "rate": 5.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "FR_55",
+  "code": "FR_55",
+  "label": "TVA 5,5 % — France",
+  "rate": 5.5,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "FR_60",
+  "code": "FR_60",
+  "label": "TVA 6 % — France",
+  "rate": 6.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "FR_85",
+  "code": "FR_85",
+  "label": "TVA 8,5 % — France",
+  "rate": 8.5,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "FR_92",
+  "code": "FR_92",
+  "label": "TVA 9,2 % — France",
+  "rate": 9.2,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "FR_100",
+  "code": "FR_100",
+  "label": "TVA 10 % — France",
+  "rate": 10.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "FR_130",
+  "code": "FR_130",
+  "label": "TVA 13 % — France",
+  "rate": 13.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "FR_15_385",
+  "code": "FR_15_385",
+  "label": "TVA 15,385 % — France",
+  "rate": 15.385,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "FR_160",
+  "code": "FR_160",
+  "label": "TVA 16 % — France",
+  "rate": 16.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "FR_190",
+  "code": "FR_190",
+  "label": "TVA 19 % — France",
+  "rate": 19.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "FR_200",
+  "code": "FR_200",
+  "label": "TVA 20 % — France",
+  "rate": 20.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "FR_85_construction",
+  "code": "FR_85_construction",
+  "label": "TVA 8,5 % — France (Construction)",
+  "rate": 8.5,
+  "is_exempt": 0,
+  "description": "Taux applicable aux travaux de rénovation et construction en France."
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "FR_100_construction",
+  "code": "FR_100_construction",
+  "label": "TVA 10 % — France (Construction)",
+  "rate": 10.0,
+  "is_exempt": 0,
+  "description": "Taux applicable aux travaux de rénovation et construction en France."
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "FR_200_construction",
+  "code": "FR_200_construction",
+  "label": "TVA 20 % — France (Construction)",
+  "rate": 20.0,
+  "is_exempt": 0,
+  "description": "Taux applicable aux travaux de rénovation et construction en France."
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "AD_10",
+  "code": "AD_10",
+  "label": "TVA 1 % — Andorre",
+  "rate": 1.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "AD_45",
+  "code": "AD_45",
+  "label": "TVA 4,5 % — Andorre",
+  "rate": 4.5,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "AD_95",
+  "code": "AD_95",
+  "label": "TVA 9,5 % — Andorre",
+  "rate": 9.5,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "AT_100",
+  "code": "AT_100",
+  "label": "TVA 10 % — Autriche",
+  "rate": 10.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "AT_130",
+  "code": "AT_130",
+  "label": "TVA 13 % — Autriche",
+  "rate": 13.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "AT_190",
+  "code": "AT_190",
+  "label": "TVA 19 % — Autriche",
+  "rate": 19.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "AT_200",
+  "code": "AT_200",
+  "label": "TVA 20 % — Autriche",
+  "rate": 20.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "BE_06",
+  "code": "BE_06",
+  "label": "TVA 0,6 % — Belgique",
+  "rate": 0.6,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "BE_12",
+  "code": "BE_12",
+  "label": "TVA 1,2 % — Belgique",
+  "rate": 1.2,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "BE_21",
+  "code": "BE_21",
+  "label": "TVA 2,1 % — Belgique",
+  "rate": 2.1,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "BG_90",
+  "code": "BG_90",
+  "label": "TVA 9 % — Bulgarie",
+  "rate": 9.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "BG_200",
+  "code": "BG_200",
+  "label": "TVA 20 % — Bulgarie",
+  "rate": 20.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "CH_25",
+  "code": "CH_25",
+  "label": "TVA 2,5 % — Suisse",
+  "rate": 2.5,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "CH_26",
+  "code": "CH_26",
+  "label": "TVA 2,6 % — Suisse",
+  "rate": 2.6,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "CH_30",
+  "code": "CH_30",
+  "label": "TVA 3 % — Suisse",
+  "rate": 3.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "CH_37",
+  "code": "CH_37",
+  "label": "TVA 3,7 % — Suisse",
+  "rate": 3.7,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "CH_77",
+  "code": "CH_77",
+  "label": "TVA 7,7 % — Suisse",
+  "rate": 7.7,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "CH_81",
+  "code": "CH_81",
+  "label": "TVA 8,1 % — Suisse",
+  "rate": 8.1,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "CY_30",
+  "code": "CY_30",
+  "label": "TVA 3 % — Chypre",
+  "rate": 3.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "CY_50",
+  "code": "CY_50",
+  "label": "TVA 5 % — Chypre",
+  "rate": 5.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "CY_80",
+  "code": "CY_80",
+  "label": "TVA 8 % — Chypre",
+  "rate": 8.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "CY_90",
+  "code": "CY_90",
+  "label": "TVA 9 % — Chypre",
+  "rate": 9.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "CY_190",
+  "code": "CY_190",
+  "label": "TVA 19 % — Chypre",
+  "rate": 19.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "CZ_100",
+  "code": "CZ_100",
+  "label": "TVA 10 % — Rép. tchèque",
+  "rate": 10.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "CZ_120",
+  "code": "CZ_120",
+  "label": "TVA 12 % — Rép. tchèque",
+  "rate": 12.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "CZ_150",
+  "code": "CZ_150",
+  "label": "TVA 15 % — Rép. tchèque",
+  "rate": 15.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "CZ_210",
+  "code": "CZ_210",
+  "label": "TVA 21 % — Rép. tchèque",
+  "rate": 21.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "DE_70",
+  "code": "DE_70",
+  "label": "TVA 7 % — Allemagne",
+  "rate": 7.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "DE_190",
+  "code": "DE_190",
+  "label": "TVA 19 % — Allemagne",
+  "rate": 19.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "DK_250",
+  "code": "DK_250",
+  "label": "TVA 25 % — Danemark",
+  "rate": 25.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "EE_90",
+  "code": "EE_90",
+  "label": "TVA 9 % — Estonie",
+  "rate": 9.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "EE_200",
+  "code": "EE_200",
+  "label": "TVA 20 % — Estonie",
+  "rate": 20.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "EE_220",
+  "code": "EE_220",
+  "label": "TVA 22 % — Estonie",
+  "rate": 22.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "EE_240",
+  "code": "EE_240",
+  "label": "TVA 24 % — Estonie",
+  "rate": 24.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "ES_40",
+  "code": "ES_40",
+  "label": "TVA 4 % — Espagne",
+  "rate": 4.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "ES_70",
+  "code": "ES_70",
+  "label": "TVA 7 % — Espagne",
+  "rate": 7.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "ES_100",
+  "code": "ES_100",
+  "label": "TVA 10 % — Espagne",
+  "rate": 10.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "ES_210",
+  "code": "ES_210",
+  "label": "TVA 21 % — Espagne",
+  "rate": 21.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "FI_100",
+  "code": "FI_100",
+  "label": "TVA 10 % — Finlande",
+  "rate": 10.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "FI_135",
+  "code": "FI_135",
+  "label": "TVA 13,5 % — Finlande",
+  "rate": 13.5,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "FI_140",
+  "code": "FI_140",
+  "label": "TVA 14 % — Finlande",
+  "rate": 14.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "FI_240",
+  "code": "FI_240",
+  "label": "TVA 24 % — Finlande",
+  "rate": 24.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "FI_255",
+  "code": "FI_255",
+  "label": "TVA 25,5 % — Finlande",
+  "rate": 25.5,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "GB_50",
+  "code": "GB_50",
+  "label": "TVA 5 % — Royaume-Uni",
+  "rate": 5.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "GB_200",
+  "code": "GB_200",
+  "label": "TVA 20 % — Royaume-Uni",
+  "rate": 20.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "GR_40",
+  "code": "GR_40",
+  "label": "TVA 4 % — Grèce",
+  "rate": 4.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "GR_60",
+  "code": "GR_60",
+  "label": "TVA 6 % — Grèce",
+  "rate": 6.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "GR_130",
+  "code": "GR_130",
+  "label": "TVA 13 % — Grèce",
+  "rate": 13.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "GR_170",
+  "code": "GR_170",
+  "label": "TVA 17 % — Grèce",
+  "rate": 17.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "GR_240",
+  "code": "GR_240",
+  "label": "TVA 24 % — Grèce",
+  "rate": 24.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "HR_50",
+  "code": "HR_50",
+  "label": "TVA 5 % — Croatie",
+  "rate": 5.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "HR_130",
+  "code": "HR_130",
+  "label": "TVA 13 % — Croatie",
+  "rate": 13.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "HR_250",
+  "code": "HR_250",
+  "label": "TVA 25 % — Croatie",
+  "rate": 25.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "HU_50",
+  "code": "HU_50",
+  "label": "TVA 5 % — Hongrie",
+  "rate": 5.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "HU_100",
+  "code": "HU_100",
+  "label": "TVA 10 % — Hongrie",
+  "rate": 10.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "HU_270",
+  "code": "HU_270",
+  "label": "TVA 27 % — Hongrie",
+  "rate": 27.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "IE_48",
+  "code": "IE_48",
+  "label": "TVA 4,8 % — Irlande",
+  "rate": 4.8,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "IE_90",
+  "code": "IE_90",
+  "label": "TVA 9 % — Irlande",
+  "rate": 9.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "IE_135",
+  "code": "IE_135",
+  "label": "TVA 13,5 % — Irlande",
+  "rate": 13.5,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "IE_210",
+  "code": "IE_210",
+  "label": "TVA 21 % — Irlande",
+  "rate": 21.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "IE_230",
+  "code": "IE_230",
+  "label": "TVA 23 % — Irlande",
+  "rate": 23.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "IT_40",
+  "code": "IT_40",
+  "label": "TVA 4 % — Italie",
+  "rate": 4.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "IT_50",
+  "code": "IT_50",
+  "label": "TVA 5 % — Italie",
+  "rate": 5.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "IT_100",
+  "code": "IT_100",
+  "label": "TVA 10 % — Italie",
+  "rate": 10.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "IT_220",
+  "code": "IT_220",
+  "label": "TVA 22 % — Italie",
+  "rate": 22.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "LT_50",
+  "code": "LT_50",
+  "label": "TVA 5 % — Lituanie",
+  "rate": 5.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "LT_90",
+  "code": "LT_90",
+  "label": "TVA 9 % — Lituanie",
+  "rate": 9.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "LT_120",
+  "code": "LT_120",
+  "label": "TVA 12 % — Lituanie",
+  "rate": 12.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "LT_210",
+  "code": "LT_210",
+  "label": "TVA 21 % — Lituanie",
+  "rate": 21.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "LO_10",
+  "code": "LO_10",
+  "label": "TVA 1 % — LO",
+  "rate": 1.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "LU_70",
+  "code": "LU_70",
+  "label": "TVA 7 % — Luxembourg",
+  "rate": 7.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "LU_80",
+  "code": "LU_80",
+  "label": "TVA 8 % — Luxembourg",
+  "rate": 8.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "LU_120",
+  "code": "LU_120",
+  "label": "TVA 12 % — Luxembourg",
+  "rate": 12.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "LU_130",
+  "code": "LU_130",
+  "label": "TVA 13 % — Luxembourg",
+  "rate": 13.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "LU_140",
+  "code": "LU_140",
+  "label": "TVA 14 % — Luxembourg",
+  "rate": 14.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "LU_160",
+  "code": "LU_160",
+  "label": "TVA 16 % — Luxembourg",
+  "rate": 16.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "LU_170",
+  "code": "LU_170",
+  "label": "TVA 17 % — Luxembourg",
+  "rate": 17.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "LV_50",
+  "code": "LV_50",
+  "label": "TVA 5 % — Lettonie",
+  "rate": 5.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "LV_120",
+  "code": "LV_120",
+  "label": "TVA 12 % — Lettonie",
+  "rate": 12.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "LV_210",
+  "code": "LV_210",
+  "label": "TVA 21 % — Lettonie",
+  "rate": 21.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "MC_21",
+  "code": "MC_21",
+  "label": "TVA 2,1 % — Monaco",
+  "rate": 2.1,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "MC_55",
+  "code": "MC_55",
+  "label": "TVA 5,5 % — Monaco",
+  "rate": 5.5,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "MC_85",
+  "code": "MC_85",
+  "label": "TVA 8,5 % — Monaco",
+  "rate": 8.5,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "MC_100",
+  "code": "MC_100",
+  "label": "TVA 10 % — Monaco",
+  "rate": 10.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "MC_200",
+  "code": "MC_200",
+  "label": "TVA 20 % — Monaco",
+  "rate": 20.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "MT_50",
+  "code": "MT_50",
+  "label": "TVA 5 % — Malte",
+  "rate": 5.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "MT_70",
+  "code": "MT_70",
+  "label": "TVA 7 % — Malte",
+  "rate": 7.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "MT_120",
+  "code": "MT_120",
+  "label": "TVA 12 % — Malte",
+  "rate": 12.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "MT_150",
+  "code": "MT_150",
+  "label": "TVA 15 % — Malte",
+  "rate": 15.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "MU_150",
+  "code": "MU_150",
+  "label": "TVA 15 % — Île Maurice",
+  "rate": 15.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "NL_90",
+  "code": "NL_90",
+  "label": "TVA 9 % — Pays-Bas",
+  "rate": 9.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "NL_210",
+  "code": "NL_210",
+  "label": "TVA 21 % — Pays-Bas",
+  "rate": 21.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "PL_50",
+  "code": "PL_50",
+  "label": "TVA 5 % — Pologne",
+  "rate": 5.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "PL_80",
+  "code": "PL_80",
+  "label": "TVA 8 % — Pologne",
+  "rate": 8.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "PL_230",
+  "code": "PL_230",
+  "label": "TVA 23 % — Pologne",
+  "rate": 23.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "PT_60",
+  "code": "PT_60",
+  "label": "TVA 6 % — Portugal",
+  "rate": 6.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "PT_130",
+  "code": "PT_130",
+  "label": "TVA 13 % — Portugal",
+  "rate": 13.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "PT_160",
+  "code": "PT_160",
+  "label": "TVA 16 % — Portugal",
+  "rate": 16.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "PT_180",
+  "code": "PT_180",
+  "label": "TVA 18 % — Portugal",
+  "rate": 18.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "PT_220",
+  "code": "PT_220",
+  "label": "TVA 22 % — Portugal",
+  "rate": 22.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "PT_230",
+  "code": "PT_230",
+  "label": "TVA 23 % — Portugal",
+  "rate": 23.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "RO_50",
+  "code": "RO_50",
+  "label": "TVA 5 % — Roumanie",
+  "rate": 5.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "RO_90",
+  "code": "RO_90",
+  "label": "TVA 9 % — Roumanie",
+  "rate": 9.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "RO_110",
+  "code": "RO_110",
+  "label": "TVA 11 % — Roumanie",
+  "rate": 11.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "RO_190",
+  "code": "RO_190",
+  "label": "TVA 19 % — Roumanie",
+  "rate": 19.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "RO_210",
+  "code": "RO_210",
+  "label": "TVA 21 % — Roumanie",
+  "rate": 21.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "SE_60",
+  "code": "SE_60",
+  "label": "TVA 6 % — Suède",
+  "rate": 6.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "SE_120",
+  "code": "SE_120",
+  "label": "TVA 12 % — Suède",
+  "rate": 12.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "SE_250",
+  "code": "SE_250",
+  "label": "TVA 25 % — Suède",
+  "rate": 25.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "SI_50",
+  "code": "SI_50",
+  "label": "TVA 5 % — Slovénie",
+  "rate": 5.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "SI_95",
+  "code": "SI_95",
+  "label": "TVA 9,5 % — Slovénie",
+  "rate": 9.5,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "SI_220",
+  "code": "SI_220",
+  "label": "TVA 22 % — Slovénie",
+  "rate": 22.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "SK_50",
+  "code": "SK_50",
+  "label": "TVA 5 % — Slovaquie",
+  "rate": 5.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "SK_100",
+  "code": "SK_100",
+  "label": "TVA 10 % — Slovaquie",
+  "rate": 10.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "SK_230",
+  "code": "SK_230",
+  "label": "TVA 23 % — Slovaquie",
+  "rate": 23.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "NO_120",
+  "code": "NO_120",
+  "label": "TVA 12 % — Norvège",
+  "rate": 12.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "NO_150",
+  "code": "NO_150",
+  "label": "TVA 15 % — Norvège",
+  "rate": 15.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "NO_250",
+  "code": "NO_250",
+  "label": "TVA 25 % — Norvège",
+  "rate": 25.0,
+  "is_exempt": 0,
+  "description": ""
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "exempt",
+  "code": "exempt",
+  "label": "Exonéré de TVA",
+  "rate": 0.0,
+  "is_exempt": 1,
+  "description": "Opérations exonérées de TVA : franchise en base, associations, professions médicales, etc."
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "extracom",
+  "code": "extracom",
+  "label": "Extra-communautaire (0 %)",
+  "rate": 0.0,
+  "is_exempt": 1,
+  "description": "Exportations hors Union Européenne. TVA non applicable."
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "intracom_21",
+  "code": "intracom_21",
+  "label": "Intracommunautaire (21 %)",
+  "rate": 0.0,
+  "is_exempt": 1,
+  "description": "Livraison intracommunautaire. TVA autoliquidée par l acquisition."
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "intracom_55",
+  "code": "intracom_55",
+  "label": "Intracommunautaire (55 %)",
+  "rate": 0.0,
+  "is_exempt": 1,
+  "description": "Livraison intracommunautaire. TVA autoliquidée par l acquisition."
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "intracom_85",
+  "code": "intracom_85",
+  "label": "Intracommunautaire (85 %)",
+  "rate": 0.0,
+  "is_exempt": 1,
+  "description": "Livraison intracommunautaire. TVA autoliquidée par l acquisition."
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "intracom_100",
+  "code": "intracom_100",
+  "label": "Intracommunautaire (100 %)",
+  "rate": 0.0,
+  "is_exempt": 1,
+  "description": "Livraison intracommunautaire. TVA autoliquidée par l acquisition."
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "crossborder",
+  "code": "crossborder",
+  "label": "Transfrontalier (0 %)",
+  "rate": 0.0,
+  "is_exempt": 1,
+  "description": "Opérations transfrontalières soumises à autoliquidation."
+ },
+ {
+  "doctype": "Pennylane VAT Rate",
+  "name": "mixed",
+  "code": "mixed",
+  "label": "Taux mixte",
+  "rate": 0.0,
+  "is_exempt": 1,
+  "description": "Opération à taux multiples."
+ }
+]
