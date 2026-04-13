@@ -50,12 +50,14 @@
    "reqd": 1
   },
   {
+   "default": "piece",
    "fieldname": "unit",
    "fieldtype": "Link",
    "label": "Unit",
    "options": "Pennylane Unit"
   },
   {
+   "default": "FR_200",
    "fieldname": "vat_rate",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -96,6 +98,7 @@
    "read_only": 1
   },
   {
+   "default": "EUR",
    "fieldname": "currency",
    "fieldtype": "Link",
    "hidden": 1,
@@ -105,8 +108,8 @@
  ],
  "istable": 1,
  "links": [],
- "modified": "2026-04-08 17:18:04.781706",
- "modified_by": "kylian.mallet@sklav.group",
+ "modified": "2026-04-13 12:46:38.811118",
+ "modified_by": "Administrator",
  "module": "Pennylane",
  "name": "Pennylane Invoice Line",
  "naming_rule": "Expression",
