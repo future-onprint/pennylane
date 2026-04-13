@@ -25,9 +25,6 @@ from pennylane.sync.utils import enqueue_sync, is_integration_enabled, notify_fu
 
 _SYNC_FLAG = "pennylane_sync_source"
 
-# Statuses that lock the quote from further edits
-_LOCKED_STATUSES = {"accepted", "denied", "invoiced", "expired"}
-
 
 # ------------------------------------------------------------------
 # Doc events
@@ -35,39 +32,15 @@ _LOCKED_STATUSES = {"accepted", "denied", "invoiced", "expired"}
 
 
 def on_quote_save(doc, method=None):
-	"""Fired on after_insert / on_update — only for pending (docstatus=0) docs."""
+	"""Fired on after_insert / on_update."""
 	if getattr(doc.flags, _SYNC_FLAG, None) == "pennylane":
 		return
 	if not is_integration_enabled():
-		return
-	if doc.docstatus != 0:
 		return
 	settings = frappe.get_cached_doc("Pennylane Settings")
 	if not settings.sync_quotes:
 		return
 	enqueue_sync("customer_quote", "Pennylane Customer Quote", doc.name, operation="update")
-
-
-def on_quote_submit(doc, method=None):
-	"""Fired on on_submit — not used for push (quotes have no finalization step).
-
-	Submission happens automatically on pull when Pennylane locks the quote.
-	This hook exists to prevent accidental manual submission triggering a push.
-	"""
-	pass
-
-
-def on_quote_cancel(doc, method=None):
-	"""Fired on on_cancel."""
-	if getattr(doc.flags, _SYNC_FLAG, None) == "pennylane":
-		return
-	frappe.db.set_value("Pennylane Customer Quote", doc.name, "sync_status", "Failed")
-	write_log(
-		direction="push", resource_type="customer_quote", operation="cancel",
-		status="Info", frappe_doctype="Pennylane Customer Quote", frappe_docname=doc.name,
-		pennylane_id=doc.pennylane_id,
-		error_message="Quote cancelled in Frappe. Manual action may be required in Pennylane.",
-	)
 
 
 # ------------------------------------------------------------------
@@ -144,7 +117,8 @@ def pull_quotes():
 		if "cursor" in str(exc).lower():
 			frappe.log_error(str(exc), "Pennylane pull_quotes: invalid cursor — resetting")
 			frappe.db.set_value("Pennylane Settings", "Pennylane Settings", "quote_changelog_cursor", None)
-			resp = get_changelog(client, cursor=None, start_date=start_date)
+			frappe.db.commit()
+			return  # Let next scheduled run start fresh
 		else:
 			raise
 
@@ -177,27 +151,36 @@ def full_sync_quotes():
 	"""Pull all quotes from the list endpoint (force full sync)."""
 	if not is_integration_enabled():
 		return
+
+	lock_key = "pennylane_full_sync_quotes"
+	if not frappe.cache().set(lock_key, "1", nx=True, ex=3600):
+		frappe.log_error("Full sync already running — skipping.", "Pennylane full_sync_quotes")
+		return
+
 	client = PennylaneClient.from_settings()
 	ok = errors = 0
-	for pl_quote in list_quotes(client):
-		try:
-			_upsert(get_quote(client, pl_quote["id"]), client, write_sync_log=False)
-			ok += 1
-		except Exception as exc:
-			errors += 1
-			frappe.log_error(str(exc), f"Pennylane full_sync_quotes id={pl_quote.get('id')}")
-		finally:
-			frappe.db.commit()
-	frappe.db.set_value(
-		"Pennylane Settings", "Pennylane Settings", "quote_changelog_cursor", None
-	)
-	write_log(
-		direction="pull", resource_type="customer_quote", operation="full_sync",
-		status="Success" if not errors else "Failed",
-		error_message=f"{ok} imported, {errors} errors" if errors else f"{ok} imported",
-	)
-	notify_full_sync_complete("customer_quote", ok, errors)
-	frappe.db.commit()
+	try:
+		for pl_quote in list_quotes(client):
+			try:
+				_upsert(get_quote(client, pl_quote["id"]), client, write_sync_log=False)
+				ok += 1
+			except Exception as exc:
+				errors += 1
+				frappe.log_error(str(exc), f"Pennylane full_sync_quotes id={pl_quote.get('id')}")
+			finally:
+				frappe.db.commit()
+		frappe.db.set_value(
+			"Pennylane Settings", "Pennylane Settings", "quote_changelog_cursor", None
+		)
+		write_log(
+			direction="pull", resource_type="customer_quote", operation="full_sync",
+			status="Success" if not errors else "Failed",
+			error_message=f"{ok} imported, {errors} errors" if errors else f"{ok} imported",
+		)
+		notify_full_sync_complete("customer_quote", ok, errors)
+		frappe.db.commit()
+	finally:
+		frappe.cache().delete(lock_key)
 
 
 def _upsert(pl_data: dict, client: PennylaneClient, write_sync_log: bool = True):
@@ -212,7 +195,7 @@ def _upsert(pl_data: dict, client: PennylaneClient, write_sync_log: bool = True)
 	pl_data["invoice_lines"] = get_quote_lines(client, pl_id)
 
 	fields = from_pennylane(pl_data)
-	is_locked = fields.pop("_locked", False)
+	fields.pop("_locked", None)  # no longer used — DocType is non-submittable
 
 	doc_name = frappe.db.get_value("Pennylane Customer Quote", {"pennylane_id": pl_id}, "name")
 	sync_meta = {"sync_status": "Synced", "last_synced_at": frappe.utils.now_datetime()}
@@ -221,24 +204,10 @@ def _upsert(pl_data: dict, client: PennylaneClient, write_sync_log: bool = True)
 	if doc_name:
 		doc = frappe.get_doc("Pennylane Customer Quote", doc_name)
 		doc.flags[_SYNC_FLAG] = "pennylane"
-
-		if doc.docstatus == 0:
-			doc.update({k: v for k, v in fields.items() if k != "invoice_lines"})
-			doc.set("invoice_lines", fields.get("invoice_lines", []))
-			doc.update(sync_meta)
-			doc.save(ignore_permissions=True)
-
-			if is_locked:
-				doc.submit()
-		else:
-			# Already submitted — only update read-only metadata
-			update = {
-				"status": fields.get("status"),
-				"amount": fields.get("amount"),
-				"currency_amount": fields.get("currency_amount"),
-				**sync_meta,
-			}
-			frappe.db.set_value("Pennylane Customer Quote", doc_name, update)
+		doc.update({k: v for k, v in fields.items() if k != "invoice_lines"})
+		doc.set("invoice_lines", fields.get("invoice_lines", []))
+		doc.update(sync_meta)
+		doc.save(ignore_permissions=True)
 
 		if pl_created_at:
 			set_creation("Pennylane Customer Quote", doc_name, pl_created_at)
@@ -257,9 +226,6 @@ def _upsert(pl_data: dict, client: PennylaneClient, write_sync_log: bool = True)
 		doc.set("invoice_lines", fields.get("invoice_lines", []))
 		doc.update(sync_meta)
 		doc.insert(ignore_permissions=True)
-
-		if is_locked:
-			doc.submit()
 
 		if pl_created_at:
 			set_creation("Pennylane Customer Quote", doc.name, pl_created_at)
@@ -317,7 +283,7 @@ def _try_attach_pdf(doc, pl_data: dict) -> None:
 	if not public_file_url or not filename:
 		return
 	try:
-		attach_pdf(doc, public_file_url, filename)
+		attach_pdf(doc, public_file_url, filename, replace=True)
 	except Exception as exc:
 		frappe.log_error(str(exc), f"Pennylane attach_pdf quote: {doc.name}")
 

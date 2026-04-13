@@ -161,8 +161,6 @@ doc_events = {
 	"Pennylane Customer Quote": {
 		"after_insert": "pennylane.sync.quote.on_quote_save",
 		"on_update": "pennylane.sync.quote.on_quote_save",
-		"on_submit": "pennylane.sync.quote.on_quote_submit",
-		"on_cancel": "pennylane.sync.quote.on_quote_cancel",
 	},
 }
 
