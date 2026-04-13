@@ -83,7 +83,8 @@
    "description": "Your Pennylane API key. Find it in Pennylane \u2192 Settings \u2192 API Keys.",
    "fieldname": "api_token",
    "fieldtype": "Password",
-   "label": "API Token"
+   "label": "API Token",
+   "reqd": 1
   },
   {
    "default": "https://app.pennylane.com/api/external/v2",

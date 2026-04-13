@@ -48,13 +48,28 @@ class PennylaneSettings(Document):
 			self.base_url = "https://app.pennylane.com/api/external/v2"
 		self.base_url = self.base_url.rstrip("/")
 
+		if self.is_enabled and not self.company_id:
+			frappe.msgprint(
+				frappe._("Company ID is missing. Run <b>Test Connection</b> to populate it automatically."),
+				indicator="orange",
+				alert=True,
+			)
+
 		self.webhook_url = (
 			frappe.utils.get_url("/api/method/pennylane.api.webhook.handle_webhook")
 			if self.enable_webhooks
 			else ""
 		)
 
-		self._handle_webhook_registration()
+		try:
+			self._handle_webhook_registration()
+		except Exception as exc:
+			frappe.log_error(str(exc), "Pennylane webhook registration failed")
+			frappe.msgprint(
+				frappe._("Webhook registration with Pennylane failed: {0}").format(str(exc)),
+				indicator="orange",
+				alert=True,
+			)
 
 	# ------------------------------------------------------------------
 	# Webhook registration lifecycle
@@ -109,7 +124,16 @@ class PennylaneSettings(Document):
 		client = PennylaneClient.from_settings()
 		result = create_subscription(client, self.webhook_url, events)
 
-		# Secret is returned only once at creation — store it immediately.
+		# Persist subscription ID immediately so it can be cleaned up even if the
+		# surrounding save() fails and the in-memory fields are lost.
+		frappe.db.set_value(
+			"Pennylane Settings",
+			"Pennylane Settings",
+			{"webhook_subscription_id": str(result["id"]), "webhook_registered_at": frappe.utils.now_datetime()},
+		)
+		frappe.db.commit()
+
+		# Secret is returned only once at creation — store it on self for the outer save.
 		self.webhook_secret = result["secret"]
 		self.webhook_subscription_id = result["id"]
 		self.webhook_registered_at = frappe.utils.now_datetime()
@@ -119,8 +143,15 @@ class PennylaneSettings(Document):
 		from pennylane.client.base import PennylaneClient
 		from pennylane.client.webhooks import delete_subscription
 
-		client = PennylaneClient.from_settings()
-		delete_subscription(client)
+		try:
+			client = PennylaneClient.from_settings()
+			delete_subscription(client)
+		except Exception as exc:
+			frappe.log_error(str(exc), "Pennylane webhook unregister failed")
+			frappe.msgprint(
+				frappe._("Webhook unregistration failed: {0}. The subscription may still exist in Pennylane — use 'Re-register Webhook' to reconcile.").format(str(exc)),
+				indicator="orange",
+			)
 
 		self.webhook_subscription_id = None
 		self.webhook_registered_at = None
