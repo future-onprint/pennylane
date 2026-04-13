@@ -75,9 +75,15 @@ def delete_doc(doctype: str, docname: str):
 	if doctype not in _DELETABLE_DOCTYPES:
 		frappe.throw(frappe._("Unsupported DocType: {0}").format(doctype))
 
-	status = frappe.db.get_value(doctype, docname, "sync_status")
-	if status != "Deleted":
+	row = frappe.db.get_value(doctype, docname, ["sync_status", "docstatus"], as_dict=True)
+	if not row or row.sync_status != "Deleted":
 		frappe.throw(frappe._("Only records marked as Deleted can be deleted this way."))
+
+	# Submitted documents must be cancelled before deletion
+	if row.docstatus == 1:
+		doc = frappe.get_doc(doctype, docname)
+		doc.flags.pennylane_sync_source = "pennylane"
+		doc.cancel()
 
 	frappe.delete_doc(doctype, docname, ignore_permissions=True, force=True)
 	frappe.db.commit()
@@ -121,10 +127,14 @@ def cleanup_deleted(doctype: str):
 	if doctype not in _DELETABLE_DOCTYPES:
 		frappe.throw(frappe._("Unsupported DocType: {0}").format(doctype))
 
-	names = frappe.get_all(doctype, filters={"sync_status": "Deleted"}, pluck="name")
+	records = frappe.get_all(doctype, filters={"sync_status": "Deleted"}, fields=["name", "docstatus"])
 	count = 0
-	for name in names:
-		frappe.delete_doc(doctype, name, ignore_permissions=True, force=True)
+	for rec in records:
+		if rec.docstatus == 1:
+			doc = frappe.get_doc(doctype, rec.name)
+			doc.flags.pennylane_sync_source = "pennylane"
+			doc.cancel()
+		frappe.delete_doc(doctype, rec.name, ignore_permissions=True, force=True)
 		count += 1
 
 	frappe.db.commit()
