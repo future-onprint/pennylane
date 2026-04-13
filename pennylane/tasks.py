@@ -1,18 +1,32 @@
 """Scheduled background tasks wired up in hooks.py."""
 
 import json
+import random
 
 import frappe
 
 from pennylane.sync.utils import is_integration_enabled
 
 
+_PULL_JOBS = [
+	"pennylane.sync.customer.pull_customers",
+	"pennylane.sync.invoice.pull_invoices",
+	"pennylane.sync.quote.pull_quotes",
+	"pennylane.sync.product.pull_products",
+]
+
+_PULL_TIMEOUT = 1500  # seconds — 25 min, well above the default 300s
+
+
 def hourly():
-	"""Pull changes from all Pennylane changelogs."""
-	_run("pennylane.sync.customer.pull_customers", "pull_customers")
-	_run("pennylane.sync.invoice.pull_invoices", "pull_invoices")
-	_run("pennylane.sync.quote.pull_quotes", "pull_quotes")
-	_run("pennylane.sync.product.pull_products", "pull_products")
+	"""Enqueue each pull job individually so each gets its own 1500 s timeout."""
+	for method in _PULL_JOBS:
+		frappe.enqueue(
+			method,
+			queue="long",
+			timeout=_PULL_TIMEOUT,
+			now=frappe.flags.in_test,
+		)
 
 
 def process_sync_queue():
@@ -40,7 +54,8 @@ def process_sync_queue():
 			frappe.delete_doc("Pennylane Sync Queue", item.name, ignore_permissions=True, force=True)
 		except Exception as exc:
 			retry_count = item.retry_count + 1
-			next_retry = frappe.utils.add_to_date(frappe.utils.now_datetime(), minutes=2 ** retry_count)
+			jitter = random.uniform(0, min(60, 2 ** retry_count))
+			next_retry = frappe.utils.add_to_date(frappe.utils.now_datetime(), minutes=2 ** retry_count + jitter)
 			frappe.db.set_value(
 				"Pennylane Sync Queue",
 				item.name,
@@ -74,13 +89,24 @@ def _dispatch_queue_item(item):
 
 
 def daily():
-	"""Delete Sync Logs older than the configured retention period."""
+	"""Delete Sync Logs older than the configured retention period and clean up abandoned queue items."""
 	retention = frappe.db.get_single_value("Pennylane Settings", "log_retention_days") or 0
-	if not retention:
-		return
 
-	cutoff = frappe.utils.add_days(frappe.utils.nowdate(), -int(retention))
-	frappe.db.delete("Pennylane Sync Log", {"creation": ["<", cutoff]})
+	if retention:
+		cutoff = frappe.utils.add_days(frappe.utils.nowdate(), -int(retention))
+		# Preserve Failed logs regardless of age — needed for audit trail
+		frappe.db.delete("Pennylane Sync Log", {
+			"creation": ["<", cutoff],
+			"status": ["!=", "Failed"],
+		})
+
+	# Clean up abandoned queue items older than retention days (default 30)
+	abandoned_cutoff = frappe.utils.add_days(frappe.utils.nowdate(), -int(retention or 30))
+	frappe.db.delete("Pennylane Sync Queue", {
+		"status": "Abandoned",
+		"creation": ["<", abandoned_cutoff],
+	})
+
 	frappe.db.commit()
 
 
