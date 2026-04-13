@@ -10,6 +10,7 @@ class PennylaneInvoiceLine(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
+		currency: DF.Link | None
 		currency_amount: DF.Currency
 		description: DF.SmallText | None
 		discount: DF.Float
@@ -20,9 +21,9 @@ class PennylaneInvoiceLine(Document):
 		parenttype: DF.Data
 		product: DF.Link | None
 		quantity: DF.Float
-		unit: DF.Data | None
+		unit: DF.Link | None
 		unit_price: DF.Currency
-		vat_rate: DF.Data | None
+		vat_rate: DF.Link | None
 	# end: auto-generated types
 
 	def before_save(self):
