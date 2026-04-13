@@ -194,6 +194,13 @@ def enqueue_sync(
 	doc.payload = payload
 	doc.insert(ignore_permissions=True)
 
+	# Trigger immediate processing instead of waiting for the next scheduler tick.
+	frappe.enqueue(
+		"pennylane.tasks.process_sync_queue",
+		queue="default",
+		now=frappe.flags.in_test,
+	)
+
 
 def set_creation(doctype: str, docname: str, creation: str) -> None:
 	"""Set the `creation` timestamp on an existing record using raw SQL.
