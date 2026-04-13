@@ -115,7 +115,8 @@ def pull_products():
 		if "cursor" in str(exc).lower():
 			frappe.log_error(str(exc), "Pennylane pull_products: invalid cursor — resetting")
 			frappe.db.set_value("Pennylane Settings", "Pennylane Settings", "product_changelog_cursor", None)
-			resp = get_changelog(client, cursor=None, start_date=start_date)
+			frappe.db.commit()
+			return  # Let next scheduled run start fresh
 		else:
 			raise
 
@@ -147,25 +148,34 @@ def full_sync_products():
 	"""Pull all products from the list endpoint (force full sync)."""
 	if not is_integration_enabled():
 		return
+
+	lock_key = "pennylane_full_sync_products"
+	if not frappe.cache().set(lock_key, "1", nx=True, ex=3600):
+		frappe.log_error("Full sync already running — skipping.", "Pennylane full_sync_products")
+		return
+
 	client = PennylaneClient.from_settings()
 	ok = errors = 0
-	for pl_product in list_products(client):
-		try:
-			_upsert(get_product(client, pl_product["id"]), write_sync_log=False)
-			ok += 1
-		except Exception as exc:
-			errors += 1
-			frappe.log_error(str(exc), f"Pennylane full_sync_products id={pl_product.get('id')}")
-		finally:
-			frappe.db.commit()
-	frappe.db.set_value("Pennylane Settings", "Pennylane Settings", "product_changelog_cursor", None)
-	write_log(
-		direction="pull", resource_type="product", operation="full_sync",
-		status="Success" if not errors else "Failed",
-		error_message=f"{ok} imported, {errors} errors" if errors else f"{ok} imported",
-	)
-	notify_full_sync_complete("product", ok, errors)
-	frappe.db.commit()
+	try:
+		for pl_product in list_products(client):
+			try:
+				_upsert(get_product(client, pl_product["id"]), write_sync_log=False)
+				ok += 1
+			except Exception as exc:
+				errors += 1
+				frappe.log_error(str(exc), f"Pennylane full_sync_products id={pl_product.get('id')}")
+			finally:
+				frappe.db.commit()
+		frappe.db.set_value("Pennylane Settings", "Pennylane Settings", "product_changelog_cursor", None)
+		write_log(
+			direction="pull", resource_type="product", operation="full_sync",
+			status="Success" if not errors else "Failed",
+			error_message=f"{ok} imported, {errors} errors" if errors else f"{ok} imported",
+		)
+		notify_full_sync_complete("product", ok, errors)
+		frappe.db.commit()
+	finally:
+		frappe.cache().delete(lock_key)
 
 
 def _upsert(pl_data: dict, write_sync_log: bool = True):
@@ -194,9 +204,9 @@ def _upsert(pl_data: dict, write_sync_log: bool = True):
 		doc.update(fields)
 		doc.sync_status = "Synced"
 		doc.last_synced_at = frappe.utils.now_datetime()
-		if pl_created_at:
-			doc.creation = pl_created_at
 		doc.insert(ignore_permissions=True)
+		if pl_created_at:
+			set_creation("Pennylane Product", doc.name, pl_created_at)
 		if write_sync_log:
 			write_log(direction="pull", resource_type="product", operation="create", status="Success",
 				frappe_doctype="Pennylane Product", frappe_docname=doc.name, pennylane_id=pl_id,

@@ -138,7 +138,8 @@ def pull_invoices():
 		if "cursor" in str(exc).lower():
 			frappe.log_error(str(exc), "Pennylane pull_invoices: invalid cursor — resetting")
 			frappe.db.set_value("Pennylane Settings", "Pennylane Settings", "invoice_changelog_cursor", None)
-			resp = get_changelog(client, cursor=None, start_date=start_date)
+			frappe.db.commit()
+			return  # Let next scheduled run start fresh
 		else:
 			raise
 
@@ -176,30 +177,39 @@ def full_sync_invoices(from_date: str | None = None):
 	"""
 	if not is_integration_enabled():
 		return
+
+	lock_key = "pennylane_full_sync_invoices"
+	if not frappe.cache().set(lock_key, "1", nx=True, ex=3600):
+		frappe.log_error("Full sync already running — skipping.", "Pennylane full_sync_invoices")
+		return
+
 	client = PennylaneClient.from_settings()
 	params = {}
 	if from_date:
 		params["filter"] = PennylaneClient.build_filter("date", "gteq", from_date)
 	ok = errors = 0
-	for pl_invoice in list_invoices(client, **params):
-		try:
-			_upsert(get_invoice(client, pl_invoice["id"]), client, write_sync_log=False)
-			ok += 1
-		except Exception as exc:
-			errors += 1
-			frappe.log_error(str(exc), f"Pennylane full_sync_invoices id={pl_invoice.get('id')}")
-		finally:
-			frappe.db.commit()
-	frappe.db.set_value(
-		"Pennylane Settings", "Pennylane Settings", "invoice_changelog_cursor", None
-	)
-	write_log(
-		direction="pull", resource_type="customer_invoice", operation="full_sync",
-		status="Success" if not errors else "Failed",
-		error_message=f"{ok} imported, {errors} errors" if errors else f"{ok} imported",
-	)
-	notify_full_sync_complete("customer_invoice", ok, errors)
-	frappe.db.commit()
+	try:
+		for pl_invoice in list_invoices(client, **params):
+			try:
+				_upsert(get_invoice(client, pl_invoice["id"]), client, write_sync_log=False)
+				ok += 1
+			except Exception as exc:
+				errors += 1
+				frappe.log_error(str(exc), f"Pennylane full_sync_invoices id={pl_invoice.get('id')}")
+			finally:
+				frappe.db.commit()
+		frappe.db.set_value(
+			"Pennylane Settings", "Pennylane Settings", "invoice_changelog_cursor", None
+		)
+		write_log(
+			direction="pull", resource_type="customer_invoice", operation="full_sync",
+			status="Success" if not errors else "Failed",
+			error_message=f"{ok} imported, {errors} errors" if errors else f"{ok} imported",
+		)
+		notify_full_sync_complete("customer_invoice", ok, errors)
+		frappe.db.commit()
+	finally:
+		frappe.cache().delete(lock_key)
 
 
 def _upsert(pl_data: dict, client: PennylaneClient, write_sync_log: bool = True):
