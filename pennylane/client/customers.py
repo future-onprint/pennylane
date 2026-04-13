@@ -13,12 +13,14 @@ def get_company_customer(client: PennylaneClient, pennylane_id: int) -> dict:
 	return client.get(f"/company_customers/{pennylane_id}")
 
 
-def create_customer(client: PennylaneClient, payload: dict) -> dict:
-	return client.post("/company_customers", data=payload)
+def create_customer(client: PennylaneClient, payload: dict, customer_type: str = "company") -> dict:
+	endpoint = "/individual_customers" if customer_type == "individual" else "/company_customers"
+	return client.post(endpoint, data=payload)
 
 
-def update_customer(client: PennylaneClient, pennylane_id: int, payload: dict) -> dict:
-	return client.put(f"/company_customers/{pennylane_id}", data=payload)
+def update_customer(client: PennylaneClient, pennylane_id: int, payload: dict, customer_type: str = "company") -> dict:
+	endpoint = f"/individual_customers/{pennylane_id}" if customer_type == "individual" else f"/company_customers/{pennylane_id}"
+	return client.put(endpoint, data=payload)
 
 
 def list_customers(client: PennylaneClient, **params):

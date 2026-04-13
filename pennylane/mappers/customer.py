@@ -52,17 +52,15 @@ def to_pennylane(doc_name: str) -> dict:
 	if doc.ledger_account_number:
 		payload["ledger_account"] = {"number": doc.ledger_account_number}
 
-	# Billing address
-	billing = (doc.address_line1, doc.postal_code, doc.city, doc.country)
-	if any(billing):
-		payload["billing_address"] = {
-			"address": doc.address_line1 or "",
-			"postal_code": doc.postal_code or "",
-			"city": doc.city or "",
-			"country_alpha2": _country_to_alpha2(doc.country),
-		}
+	# Billing address — always required by the API (both POST and PUT)
+	payload["billing_address"] = {
+		"address": doc.address_line1 or "",
+		"postal_code": doc.postal_code or "",
+		"city": doc.city or "",
+		"country_alpha2": _country_to_alpha2(doc.country),
+	}
 
-	# Delivery address
+	# Delivery address — only sent when at least one field is filled
 	delivery = (doc.delivery_address_line1, doc.delivery_postal_code, doc.delivery_city, doc.delivery_country)
 	if any(delivery):
 		payload["delivery_address"] = {
