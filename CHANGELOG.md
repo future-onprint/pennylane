@@ -14,10 +14,10 @@ First production release.
 
 - **Pennylane Customer** — push on save, pull via hourly changelog. Supports both `company` and `individual` customer types routed to their respective API endpoints (`/company_customers`, `/individual_customers`).
 - **Pennylane Product** — push on save, pull via hourly changelog.
-- **Pennylane Customer Invoice** — push on save/submit, pull via hourly changelog and webhook. Submittable DocType; PDF attached on pull and never re-downloaded if already present.
+- **Pennylane Customer Invoice** — push on save/submit, pull via hourly changelog and webhook. Submittable DocType; PDF attached on pull and never re-downloaded if already present. When the invoice is linked to a source quote, creation uses the dedicated `POST /customer_invoices/create_from_quote` endpoint so Pennylane inherits the customer and lines from the quote automatically.
 - **Pennylane Customer Quote** — push on save, pull via hourly changelog and webhook. Non-submittable DocType; fields are conditionally read-only when status is `accepted`, `denied`, `invoiced`, or `expired`. PDF is replaced on every pull to reflect the latest version.
 - **Pennylane Customer Contact** — read-only child table on Customer, synced during customer pull.
-- **Pennylane Sync Queue** — outbox retry queue for failed push jobs (up to 5 retries, exponential back-off with jitter).
+- **Pennylane Sync Queue** — outbox retry queue for failed push jobs (up to 5 retries, exponential back-off with jitter). Processing is triggered immediately on enqueue via a background job; the scheduler serves as a fallback for retries only.
 - **Pennylane Sync Log** — full audit trail for every push and pull operation.
 - **Pennylane Settings** — single DocType for API credentials, webhook configuration, resource toggles, force full sync, cursor management and log retention. API token is required; company ID is auto-populated via the Test Connection action.
 - **Webhook receiver** — HMAC-SHA256 signature verification (checked before evaluating any application state), event deduplication via Redis (60 s TTL), returns `200 OK` when webhooks are disabled so Pennylane does not retry.
